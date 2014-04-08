@@ -11,6 +11,15 @@ GetFaceRequest::GetFaceRequest(facemodel_t* faceModel, posemodel_t* poseModel, Q
     this->poseModel = poseModel;
 }
 
+GetFaceRequest::~GetFaceRequest() {
+    if (faceModel) {
+        delete faceModel;
+    }
+    if (poseModel) {
+        delete poseModel;
+    }
+}
+
 void GetFaceRequest::service(HttpRequest &request, HttpResponse &response) {
     QTemporaryFile* file = request.getUploadedFile("file");
     if (file) {

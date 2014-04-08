@@ -38,7 +38,7 @@ HEADERS += \
     $$PWD/webservice/getfacerequest.h \
     $$PWD/weblogger.h
 
-SOURCES += main.cpp \
+SOURCES += $$PWD/main.cpp \
 #    $$PWD/detect-face/eHbbox.cpp \
     $$PWD/detect-face/eHbox.cpp \
     $$PWD/detect-face/eHfacemodel.cpp \
