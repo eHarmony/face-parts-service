@@ -16,5 +16,7 @@ TEMPLATE = app
 
 include(../face-parts-service.pro)
 
-SOURCES += tst_getfacerequesttest.cpp
+SOURCES += \
+    tst_pathdelegator.cpp \
+    tst_getfacerequest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

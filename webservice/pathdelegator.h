@@ -14,6 +14,7 @@ class PathDelegator : public HttpRequestHandler
     Q_OBJECT
 public:
     explicit PathDelegator(QObject *parent = 0);
+    virtual ~PathDelegator();
     void service(HttpRequest &request, HttpResponse &response);
     void addPath(const QByteArray& path, HttpRequestHandler* handler);
 

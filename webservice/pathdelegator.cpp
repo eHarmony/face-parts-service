@@ -1,8 +1,15 @@
 #include "pathdelegator.h"
 
 PathDelegator::PathDelegator(QObject *parent) :
-    HttpRequestHandler(parent)
-{
+    HttpRequestHandler(parent) {
+}
+
+PathDelegator::~PathDelegator() {
+    for (QMap<QByteArray, HttpRequestHandler*>::iterator iter = paths.begin(); iter != paths.end(); ++iter) {
+        if (iter.value()) {
+            delete iter.value();
+        }
+    }
 }
 
 void PathDelegator::service(HttpRequest &request, HttpResponse &response) {

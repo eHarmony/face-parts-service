@@ -69,6 +69,9 @@ public:
     /** Get the decoded path of the HTPP request (e.g. "/index.html") */
     QByteArray getPath() const;
 
+    /** Set the decoded path of the HTTP request */
+    void setPath(const QByteArray& path);
+
     /** Get the version of the HTPP request (e.g. "HTTP/1.1") */
     QByteArray getVersion() const;
 

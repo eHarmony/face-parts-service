@@ -15,13 +15,14 @@ private:
     GetFaceRequest *faceRequest;
 
 private Q_SLOTS:
+    void initTestCase();
+    void cleanupTestCase();
+
     void badFile();
     void noFace();
     void goodFace();
     void profile();
     void faceFromPose();
-    void initTestCase();
-    void cleanupTestCase();
 };
 
 void GetFaceRequestTest::initTestCase() {

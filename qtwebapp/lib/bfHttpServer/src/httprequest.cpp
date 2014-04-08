@@ -258,6 +258,9 @@ QByteArray HttpRequest::getPath() const {
     return urlDecode(path);
 }
 
+void HttpRequest::setPath(const QByteArray& path) {
+    this->path = path;
+}
 
 QByteArray HttpRequest::getVersion() const {
     return version;

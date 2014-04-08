@@ -14,6 +14,7 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
+# http://stefanfrings.de/qtwebapp/index-en.html
 include(qtwebapp/lib/bfHttpServer/src/bfHttpServer.pri)
 include(qtwebapp/lib/bfLogging/src/bfLogging.pri)
 
