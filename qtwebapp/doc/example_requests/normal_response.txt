@@ -1,0 +1,54 @@
+GET / HTTP/1.1
+Host: www.meinemullemaus.de
+
+HTTP/1.1 200 OK
+Date: Wed, 13 Oct 2010 17:02:51 GMT
+Server: Apache/2.2
+Last-Modified: Fri, 17 Sep 2010 16:54:03 GMT
+ETag: "3c9478-4f8-4907768fcdd79"
+Accept-Ranges: bytes
+Content-Length: 1272
+Content-Type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <title>Stefan Frings, Willkommen</title>
+    <meta name="description" content="Homepage von Stefan Frings, Software und E
+lektronik Entwickler">
+    <meta name="author" content="Stefan Frings">
+    <meta name="language" content="de">
+    <meta name="robots" content="index,follow">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="standard.css">
+    <link rel="stylesheet" media="print" type="text/css" href="print.css">
+    <script src="navigation.js" type="text/javascript"></script>
+  </head>
+  <body>
+
+    <div class="links">
+      <div class="navigation" id="navigation"><a href="navigation.html">Navigati
+on/Sitemap</a></div>
+      <script type="text/javascript">navi_load("navigation","navigation.html",""
+);</script>
+    </div>
+
+    <div class="inhalt">
+
+<h1>Willkommen auf meiner Homepage</h1>
+stefan@stefanspc ~
+$ f diesen Seiten findest Du Downloads und Lesenswertes über Dinge, mit denen ic
+h mich in
+meiner Freizeit beschäftige. Die meisten Projekte hier haben daher eher unprofes
+sionellen
+Character.
+<p>
+Berufliche Informationen sind im Interesse meines Arbeitsgebers absichtlich knap
+p gehalten.
+
+    </div>
+
+  </body>
+
+</html>
+

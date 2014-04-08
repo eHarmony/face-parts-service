@@ -1,0 +1,10 @@
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 ( .NET CLR 3.5.30729)
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 115
+Connection: keep-alive
+
