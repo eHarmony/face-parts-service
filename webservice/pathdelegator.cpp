@@ -19,7 +19,6 @@ void PathDelegator::service(HttpRequest &request, HttpResponse &response) {
     }
     else {
         response.setStatus(404, QByteArray("Cannot find ") + path);
-        response.write(QByteArray("Cannot find ") + path);
     }
 }
 

@@ -20,6 +20,7 @@ void PathDelegatorTest::noPath() {
     QSettings settings;
     HttpRequest request(&settings);
     HttpResponse response(NULL);
+    request.setPath("/foo");
 
     pathDelegator->service(request, response);
 

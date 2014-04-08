@@ -31,9 +31,10 @@ void GetFaceRequest::service(HttpRequest &request, HttpResponse &response) {
     }
 }
 
-QJsonDocument GetFaceRequest::getJSONFaces(QTemporaryFile *file) {
+QJsonDocument GetFaceRequest::getJSONFaces(QFile *file) {
     image_t* img = image_readJPG(file->fileName().toStdString().c_str());
     std::vector<bbox_t> faceBoxes = facemodel_detect(faceModel, poseModel, img);
+    image_delete(img);
     QJsonArray faces;
     for (std::vector<bbox_t>::const_iterator bboxIter = faceBoxes.begin(); bboxIter != faceBoxes.end(); ++bboxIter) {
         bbox_t faceBox = (*bboxIter);
