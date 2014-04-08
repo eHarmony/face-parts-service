@@ -15,7 +15,7 @@
 
 #include <assert.h>
 #include <string.h>
-#include "weblogger.h"
+#include <weblogger.h>
 
 static inline int round2int(double x) { return (int)(x+0.5);}
 

@@ -1,29 +1,7 @@
+#include "tst_getfacerequest.h"
 #include <QString>
 #include <QtTest>
-#include <QJsonDocument>
 #include <webservice/getfacerequest.h>
-
-class GetFaceRequestTest : public QObject
-{
-    Q_OBJECT
-
-public:
-    GetFaceRequestTest();
-
-private:
-    QTemporaryFile* loadFile(const char* path);
-    GetFaceRequest *faceRequest;
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void badFile();
-    void noFace();
-    void goodFace();
-    void profile();
-    void faceFromPose();
-};
 
 void GetFaceRequestTest::initTestCase() {
     facemodel_t* faceModel = facemodel_readFromFile("../resources/face_p146.xml");
@@ -37,7 +15,8 @@ void GetFaceRequestTest::cleanupTestCase() {
 
 void GetFaceRequestTest::badFile()
 {
-    HttpRequest request(NULL);
+    QSettings settings;
+    HttpRequest request(&settings);
     HttpResponse response(NULL);
 
     faceRequest->service(request, response);
@@ -80,5 +59,3 @@ void GetFaceRequestTest::faceFromPose() {
     QCOMPARE(emptyDoc, doc);
     delete file;
 }
-
-QTEST_APPLESS_MAIN(GetFaceRequestTest)

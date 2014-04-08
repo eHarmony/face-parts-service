@@ -1,22 +1,27 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-04-08T10:23:28
+# Project created by QtCreator 2014-04-08T14:04:44
 #
 #-------------------------------------------------
 
-QT       += testlib
+QT       += network testlib
 
 QT       -= gui
 
-TARGET = tst_getfacerequesttest
+TARGET = tst_getfacerequest
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-include(../face-parts-service.pro)
+include(../face-parts-service.pri)
 
-SOURCES += \
-    tst_pathdelegator.cpp \
-    tst_getfacerequest.cpp
+SOURCES += tst_getfacerequest.cpp tst_pathdelegator.cpp \
+    main.cpp
+
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+HEADERS += \
+    tst_getfacerequest.h \
+    tst_pathdelegator.h \
+    autotest.h

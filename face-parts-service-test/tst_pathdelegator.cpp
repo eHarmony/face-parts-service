@@ -1,27 +1,9 @@
+#include "tst_pathdelegator.h"
 #include <QString>
-#include <QtTest>
+#include <QtTest/QTest>
 #include <QJsonDocument>
 #include <webservice/pathdelegator.h>
 #include <webservice/getfacerequest.h>
-
-class PathDelegatorTest : public QObject
-{
-    Q_OBJECT
-
-public:
-    PathDelegatorTest();
-
-private:
-    PathDelegator* pathDelegator;
-    GetFaceRequest* faceRequest;
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void noPath();
-    void goodPath();
-};
 
 void PathDelegatorTest::initTestCase() {
     pathDelegator = new PathDelegator();
@@ -35,7 +17,8 @@ void PathDelegatorTest::cleanupTestCase() {
 }
 
 void PathDelegatorTest::noPath() {
-    HttpRequest request(NULL);
+    QSettings settings;
+    HttpRequest request(&settings);
     HttpResponse response(NULL);
 
     pathDelegator->service(request, response);
@@ -44,7 +27,8 @@ void PathDelegatorTest::noPath() {
 }
 
 void PathDelegatorTest::goodPath() {
-    HttpRequest request(NULL);
+    QSettings settings;
+    HttpRequest request(&settings);
     HttpResponse response(NULL);
 
     request.setPath("/face-parts");
@@ -52,6 +36,3 @@ void PathDelegatorTest::goodPath() {
 
     QCOMPARE(500, response.getStatus());
 }
-
-QTEST_APPLESS_MAIN(PathDelegatorTest)
-

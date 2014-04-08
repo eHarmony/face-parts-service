@@ -32,7 +32,6 @@ double vv[9] = {0.0000,
 		0.3420};
 
 static inline double min(double x, double y) { return (x <= y ? x : y); }
-static inline double max(double x, double y) { return (x <= y ? y : x); }
 
 static inline int min(int x, int y) { return (x <= y ? x : y); }
 static inline int max(int x, int y) { return (x <= y ? y : x); }
