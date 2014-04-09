@@ -13,7 +13,8 @@ class GetFaceRequestTest : public QObject
 
 private:
     GetFaceRequest *faceRequest;
-    QJsonDocument loadJson(const QString& filename);
+    void testFaces(const QString& filename);
+    void compareDoubles(double actual, double expected, double delta);
 
 private Q_SLOTS:
     void initTestCase();

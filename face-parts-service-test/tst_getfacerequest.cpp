@@ -25,40 +25,67 @@ void GetFaceRequestTest::badFile()
 }
 
 void GetFaceRequestTest::noFace() {
-    /*QFile file("resources/48170621_4.jpg");
+    QFile file("resources/48170621_4.jpg");
     QJsonDocument doc = faceRequest->getJSONFaces(&file);
     QJsonArray array;
     QJsonDocument emptyDoc(array);
 
-    QCOMPARE(emptyDoc, doc);*/
+    QCOMPARE(emptyDoc, doc);
 }
 
 void GetFaceRequestTest::goodFace() {
-    QFile file("resources/10156670_4.jpg");
-    QJsonDocument doc = faceRequest->getJSONFaces(&file);
-    QJsonDocument expected = loadJson("resources/10156670_4.json");
-
-    QCOMPARE(expected, doc);
+    testFaces("1");
 }
 
 void GetFaceRequestTest::profile() {
-    QFile file("resources/profile.jpg");
-    QJsonDocument doc = faceRequest->getJSONFaces(&file);
-    QJsonDocument expected = loadJson("resources/profile.json");
-
-    QCOMPARE(expected, doc);
+    testFaces("profile");
 }
 
 void GetFaceRequestTest::faceFromPose() {
-    QFile file("resources/10009091_3.jpg");
-    QJsonDocument doc = faceRequest->getJSONFaces(&file);
-    QJsonDocument expected = loadJson("resources/10009091_3.json");
-
-    QCOMPARE(expected, doc);
+    testFaces("10156670_4");
 }
 
-QJsonDocument GetFaceRequestTest::loadJson(const QString& fileName) {
-    QFile jsonFile(fileName);
-    jsonFile.open(QFile::ReadOnly);
-    return QJsonDocument().fromJson(jsonFile.readAll());
+void GetFaceRequestTest::testFaces(const QString& fileName) {
+    QString base = QString("resources/") + fileName;
+    QFile file(base + ".jpg");
+    QJsonDocument current = faceRequest->getJSONFaces(&file);
+    file.close();
+
+    QFile jsonFile(base + ".json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument expected = QJsonDocument().fromJson(jsonFile.readAll());
+    jsonFile.close();
+
+    QJsonArray currentArray = current.array();
+    QJsonArray expectedArray = expected.array();
+
+    QCOMPARE(currentArray.size(), expectedArray.size());
+
+    for (int i=0; i<currentArray.size(); ++i) {
+        QJsonObject cFaceParts = currentArray[i].toObject();
+        QJsonObject eFaceParts = expectedArray[i].toObject();
+
+        QJsonObject cFace = eFaceParts["face"].toObject();
+        QJsonObject eFace = eFaceParts["face"].toObject();
+        compareDoubles(cFace["x1"].toDouble(), eFace["x1"].toDouble(), 0.0001);
+        compareDoubles(cFace["x2"].toDouble(), eFace["x2"].toDouble(), 0.0001);
+        compareDoubles(cFace["y1"].toDouble(), eFace["y1"].toDouble(), 0.0001);
+        compareDoubles(cFace["y2"].toDouble(), eFace["y2"].toDouble(), 0.0001);
+
+        QJsonArray cParts = cFaceParts["parts"].toArray();
+        QJsonArray eParts = eFaceParts["parts"].toArray();
+
+        QCOMPARE(cParts.size(), eParts.size());
+
+        for (int j=0; j<cParts.size(); ++j) {
+            QJsonObject cPart = cParts[i].toObject();
+            QJsonObject ePart = eParts[i].toObject();
+            compareDoubles(cPart["x"].toDouble(), ePart["x"].toDouble(), 0.0001);
+            compareDoubles(cPart["y"].toDouble(), ePart["y"].toDouble(), 0.0001);
+        }
+    }
+}
+
+void GetFaceRequestTest::compareDoubles(double actual, double expected, double delta) {
+    QVERIFY(actual-delta < expected && actual+delta > expected);
 }

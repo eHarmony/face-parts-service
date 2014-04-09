@@ -38,21 +38,23 @@ QJsonDocument GetFaceRequest::getJSONFaces(QFile *file) {
     QJsonArray faces;
     for (std::vector<bbox_t>::const_iterator bboxIter = faceBoxes.begin(); bboxIter != faceBoxes.end(); ++bboxIter) {
         bbox_t faceBox = (*bboxIter);
+        QJsonObject faceParts;
         QJsonObject face;
         face["x1"] = faceBox.outer.x1;
         face["y1"] = faceBox.outer.y1;
         face["x2"] = faceBox.outer.x2;
         face["y2"] = faceBox.outer.y2;
-        QJsonArray points;
+        faceParts["face"] = face;
+        QJsonArray parts;
         for (std::vector<fbox_t>::const_iterator fboxIter = faceBox.boxes.begin(); fboxIter != faceBox.boxes.end(); ++ fboxIter) {
             fbox_t box = (*fboxIter);
-            QJsonObject point;
-            point["x"] = (box.x1 + box.x2)/2.0;
-            point["y"] = (box.y1 + box.y2)/2.0;
-            points.append(point);
+            QJsonObject part;
+            part["x"] = (box.x1 + box.x2)/2.0;
+            part["y"] = (box.y1 + box.y2)/2.0;
+            parts.append(part);
         }
-        face["points"] = points;
-        faces.append(face);
+        faceParts["parts"] = parts;
+        faces.append(faceParts);
     }
     QJsonDocument doc(faces);
     return doc;
