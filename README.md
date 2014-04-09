@@ -9,14 +9,14 @@
 2.  sudo yum install atlas-devel.x86_64
 3.  sudo yum install qt5
 
-# Make instructions
+# Make Instructions
 1.  Locate qmake (or add it to your path)
 2.  Create a build directory and cd into it
 3.  qmake path/to/src/face-parts-service.pro
   1. For debug version run qmake CONFIG=debug path/to/src/face-parts-service.pro
 4.  make
 
-# Test instructions
+# Test Instructions
 1.  Locate qmake (or add it to your path)
 2.  Create a build directory and cd into it
 3.  qmake path/to/src/face-parts-service-test/face-parts-service-test.pro
