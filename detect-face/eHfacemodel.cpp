@@ -314,7 +314,7 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, d
 	timeval start_pyra, end_pyra, interval_pyra;
 	gettimeofday(&start_pyra,NULL);
 #endif
-	featpyra_t* pyra = featpyra_create(img, model->interval, model->sbin, model->maxsize,true);
+    featpyra_t* pyra = featpyra_create(img, model->interval, model->sbin, model->maxsize,true);
 #ifdef EH_TEST_TIMER
 	gettimeofday(&end_pyra,NULL);
 	timersub(&end_pyra,&start_pyra,&interval_pyra);
@@ -353,8 +353,8 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, d
 #endif
 				}
 				parts_data.at(k).level = level;
-				int len = (resp[level]->sizy)*(resp[level]->sizx);
-				parts_data.at(k).score = new double[len];
+                int len = (resp[level]->sizy)*(resp[level]->sizx);
+                parts_data.at(k).score = new double[len];
 				memcpy(parts_data.at(k).score,resp[level]->vals+fid*len,len*sizeof(double));
 				parts_data.at(k).sizScore[0] = resp[level]->sizy;
 				parts_data.at(k).sizScore[1] = resp[level]->sizx;
@@ -389,7 +389,7 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, d
 			/* add bias to root score (const term) */
 			vector<int> slct; slct.reserve(10000);
 			for(int i=0;i<rootpart_data->sizScore[0]*rootpart_data->sizScore[1];i++) {
-				rootpart_data->score[i] += model->defs[rootpart->defid].w[0];
+                rootpart_data->score[i] += model->defs[rootpart->defid].w[0];
 				if(rootpart_data->score[i]>=thrs)
 					slct.push_back(i);
 			}

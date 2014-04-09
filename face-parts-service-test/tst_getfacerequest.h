@@ -2,6 +2,7 @@
 #define TST_GETFACEREQUEST_H
 
 #include <QObject>
+#include <QJsonDocument>
 #include <autotest.h>
 
 class GetFaceRequest;
@@ -12,6 +13,7 @@ class GetFaceRequestTest : public QObject
 
 private:
     GetFaceRequest *faceRequest;
+    QJsonDocument loadJson(const QString& filename);
 
 private Q_SLOTS:
     void initTestCase();

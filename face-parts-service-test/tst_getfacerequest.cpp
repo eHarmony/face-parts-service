@@ -12,7 +12,7 @@ void GetFaceRequestTest::initTestCase() {
 void GetFaceRequestTest::cleanupTestCase() {
     delete faceRequest;
 }
-/*
+
 void GetFaceRequestTest::badFile()
 {
     QSettings settings;
@@ -25,37 +25,40 @@ void GetFaceRequestTest::badFile()
 }
 
 void GetFaceRequestTest::noFace() {
-    QFile file("images/48170621_4.jpg");
+    /*QFile file("resources/48170621_4.jpg");
     QJsonDocument doc = faceRequest->getJSONFaces(&file);
     QJsonArray array;
     QJsonDocument emptyDoc(array);
 
-    QCOMPARE(emptyDoc, doc);
+    QCOMPARE(emptyDoc, doc);*/
 }
 
 void GetFaceRequestTest::goodFace() {
-    QFile file("images/1.jpg");
+    QFile file("resources/10156670_4.jpg");
     QJsonDocument doc = faceRequest->getJSONFaces(&file);
-    QJsonArray array;
-    QJsonDocument emptyDoc(array);
+    QJsonDocument expected = loadJson("resources/10156670_4.json");
 
-    QCOMPARE(emptyDoc, doc);
+    QCOMPARE(expected, doc);
 }
 
 void GetFaceRequestTest::profile() {
-    QFile file("images/profile.jpg");
+    QFile file("resources/profile.jpg");
     QJsonDocument doc = faceRequest->getJSONFaces(&file);
-    QJsonArray array;
-    QJsonDocument emptyDoc(array);
+    QJsonDocument expected = loadJson("resources/profile.json");
 
-    QCOMPARE(emptyDoc, doc);
+    QCOMPARE(expected, doc);
 }
 
 void GetFaceRequestTest::faceFromPose() {
-    QFile file("images/10009091_3.jpg");
+    QFile file("resources/10009091_3.jpg");
     QJsonDocument doc = faceRequest->getJSONFaces(&file);
-    QJsonArray array;
-    QJsonDocument emptyDoc(array);
+    QJsonDocument expected = loadJson("resources/10009091_3.json");
 
-    QCOMPARE(emptyDoc, doc);
-}*/
+    QCOMPARE(expected, doc);
+}
+
+QJsonDocument GetFaceRequestTest::loadJson(const QString& fileName) {
+    QFile jsonFile(fileName);
+    jsonFile.open(QFile::ReadOnly);
+    return QJsonDocument().fromJson(jsonFile.readAll());
+}

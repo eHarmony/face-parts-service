@@ -78,7 +78,7 @@ void image_zero(image_ptr img, const double* val) {
 }
 
 image_ptr image_readJPG(const char* filename) {
-    cimg_library::CImg<double> img;
+    cimg_library::CImg<int> img;
     img.load_jpeg(filename);
     if(!img.data()) {
         WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not open ") + filename);
@@ -87,11 +87,12 @@ image_ptr image_readJPG(const char* filename) {
     image_ptr im = image_alloc(img.height(), img.width());
 	for(unsigned y=0;y<im->sizy;y++) {
         for(unsigned x=0;x<im->sizx;x++) {
-            im->ch[0][y+x*im->stepy]=img(y, x, 2);
-            im->ch[1][y+x*im->stepy]=img(y, x, 1);
-            im->ch[2][y+x*im->stepy]=img(y, x, 0);
+            int offset = y+x*im->stepy;
+            im->ch[0][offset]=img(x, y, 0, 0);
+            im->ch[1][offset]=img(x, y, 0, 1);
+            im->ch[2][offset]=img(x, y, 0, 2);
 		}
-	}
+    }
 	return im;
 }
 

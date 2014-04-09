@@ -39,4 +39,4 @@ SOURCES += \
     $$PWD/weblogger.cpp
 
 INCLUDEPATH += /usr/local/include /opt/local/include
-LIBS += -L/usr/local/lib -ljpeg -L/opt/local/lib -lcblas -latlas
+LIBS += -L/usr/local/lib -ljpeg -lcblas
