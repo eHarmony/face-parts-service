@@ -15,6 +15,7 @@ private:
     GetFaceRequest *faceRequest;
     void testFaces(const QString& filename);
     void compareDoubles(double actual, double expected, double delta);
+    QString testResources;
 
 private Q_SLOTS:
     void initTestCase();

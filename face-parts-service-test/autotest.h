@@ -48,7 +48,14 @@ namespace AutoTest
 
         foreach (QObject* test, testList())
         {
-            ret += QTest::qExec(test, argc, argv);
+            for (int i=0; i<argc; ++i) {
+                QString property = argv[i];
+                if (property.contains("=")) {
+                    QStringList split = property.split("=");
+                    test->setProperty(split[0].toStdString().c_str(), split[1]);
+                }
+            }
+            ret += QTest::qExec(test, 0, NULL);
         }
 
         return ret;

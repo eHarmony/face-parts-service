@@ -4,8 +4,11 @@
 #include <webservice/getfacerequest.h>
 
 void GetFaceRequestTest::initTestCase() {
-    facemodel_t* faceModel = facemodel_readFromFile("../resources/face_p146.xml");
-    posemodel_t* poseModel = posemodel_readFromFile("../resources/pose_BUFFY.xml");
+    QString modelResources = property("resources").toString();
+    testResources = property("testResources").toString();
+
+    facemodel_t* faceModel = facemodel_readFromFile(QString(modelResources + "/face_p146.xml").toStdString().c_str());
+    posemodel_t* poseModel = posemodel_readFromFile(QString(modelResources + "/pose_BUFFY.xml").toStdString().c_str());
     faceRequest = new GetFaceRequest(faceModel, poseModel);
 }
 
@@ -25,7 +28,7 @@ void GetFaceRequestTest::badFile()
 }
 
 void GetFaceRequestTest::noFace() {
-    QFile file("resources/48170621_4.jpg");
+    QFile file(testResources + "/48170621_4.jpg");
     QJsonDocument doc = faceRequest->getJSONFaces(&file);
     QJsonArray array;
     QJsonDocument emptyDoc(array);
@@ -46,7 +49,7 @@ void GetFaceRequestTest::faceFromPose() {
 }
 
 void GetFaceRequestTest::testFaces(const QString& fileName) {
-    QString base = QString("resources/") + fileName;
+    QString base = testResources + "/" + fileName;
     QFile file(base + ".jpg");
     QJsonDocument current = faceRequest->getJSONFaces(&file);
     file.close();

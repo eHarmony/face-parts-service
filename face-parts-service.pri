@@ -38,5 +38,14 @@ SOURCES += \
     $$PWD/webservice/getfacerequest.cpp \
     $$PWD/weblogger.cpp
 
-INCLUDEPATH += /usr/local/include /opt/local/include
-LIBS += -L/usr/local/lib -ljpeg -lcblas
+macx {
+    INCLUDEPATH += /usr/local/include /opt/local/include
+    LIBS += -L/usr/local/lib
+}
+
+unix:!macx {
+    INCLUDEPATH += /usr/include
+    LIBS += -L/usr/lib64/atlas/ -L/usr/lib64
+}
+
+LIBS += -ljpeg -lcblas

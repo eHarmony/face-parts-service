@@ -8,7 +8,7 @@ QT       += network testlib
 
 QT       -= gui
 
-TARGET = tst_getfacerequest
+TARGET = face-parts-service-test
 CONFIG   += console
 CONFIG   -= app_bundle
 
