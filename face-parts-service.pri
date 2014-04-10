@@ -1,5 +1,5 @@
-include(qtwebapp/lib/bfHttpServer/src/bfHttpServer.pri)
-include(qtwebapp/lib/bfLogging/src/bfLogging.pri)
+include(qtwebapp/bfHttpServer/src/bfHttpServer.pri)
+include(qtwebapp/bfLogging/src/bfLogging.pri)
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
