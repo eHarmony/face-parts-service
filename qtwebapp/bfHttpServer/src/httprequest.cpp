@@ -149,6 +149,7 @@ void HttpRequest::readBody(QTcpSocket& socket) {
                 qCritical("HttpRequest: Error writing temp file for multipart body");
             }
             parseMultiPartFile();
+            QString a = tempFile.fileName();
             tempFile.close();
             status=complete;
         }
@@ -335,6 +336,10 @@ void HttpRequest::parseMultiPartFile() {
                     end=line.indexOf("\"",start+11);
                     if (start>=0 && end>=start) {
                         fileName=line.mid(start+11,end-start-11);
+                    }
+                    else {
+                        qDebug("No filename specified");
+                        fileName="none";
                     }
 #ifdef SUPERVERBOSE
                     qDebug("HttpRequest: multipart field=%s, filename=%s",fieldName.data(),fileName.data());
