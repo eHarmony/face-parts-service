@@ -5,14 +5,12 @@
  * 2012-07 @ eH
  */
 
-#define cimg_display 0
-#define cimg_use_jpeg
-
-#include <CImg.h>
-
 #include "eHimage.h"
 #include "eHbox.h"
+#include <cmath>
 
+#include <QImage>
+#include <QRgb>
 #include <assert.h>
 #include <string.h>
 #include <weblogger.h>
@@ -78,9 +76,8 @@ void image_zero(image_ptr img, const double* val) {
 }
 
 image_ptr image_readJPG(const char* filename) {
-    cimg_library::CImg<int> img;
-    img.load_jpeg(filename);
-    if(!img.data()) {
+    QImage img(filename);
+    if(img.isNull()) {
         WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not open ") + filename);
 		return NULL;
     }
@@ -88,9 +85,10 @@ image_ptr image_readJPG(const char* filename) {
 	for(unsigned y=0;y<im->sizy;y++) {
         for(unsigned x=0;x<im->sizx;x++) {
             int offset = y+x*im->stepy;
-            im->ch[0][offset]=img(x, y, 0, 0);
-            im->ch[1][offset]=img(x, y, 0, 1);
-            im->ch[2][offset]=img(x, y, 0, 2);
+            QRgb pixel = img.pixel(x, y);
+            im->ch[0][offset] = qRed(pixel);
+            im->ch[1][offset] = qGreen(pixel);
+            im->ch[2][offset] = qBlue(pixel);
 		}
     }
 	return im;
@@ -121,8 +119,8 @@ void subsample1dtran(image_ptr src, size_t sheight,
 	double invscale = (double)sheight/(double)dheight;
 
 	/* cache interpolation values since they can be shared 
-	 * among different columns*/
-	int len = (int)ceil(dheight*invscale) + 2*dheight;
+     * among different columns*/
+    int len = (int)ceil(dheight*invscale) + 2*dheight;
 	alphainfo* ofs=new alphainfo[len];
 	int k = 0;
 	for (unsigned dy=0;dy<dheight;dy++) {

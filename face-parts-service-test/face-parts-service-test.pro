@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += network testlib
-
-QT       -= gui
+QT       += network testlib gui
 
 TARGET = face-parts-service-test
 CONFIG   += console
