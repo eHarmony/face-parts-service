@@ -345,7 +345,7 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, d
 					timeval start_conv, end_conv, interval_conv;
 					gettimeofday(&start_conv,NULL);
 #endif
-					resp[level]=filterv_apply(model->filters, pyra->feat[level], 0, model->filters.size()-1);
+                    resp[level]=filterv_apply(model->filters, pyra->feat[level], 0, model->filters.size()-1);
 #ifdef EH_TEST_TIMER
 					gettimeofday(&end_conv,NULL);
 					timersub(&end_conv,&start_conv,&interval_conv);
@@ -511,7 +511,7 @@ vector<bbox_t> facemodel_detect(const facemodel_t* facemodel, const posemodel_t*
 			image_ptr patch = image_crop(img, head, (int*)&offset);
 			double scale2 = EH_IMG_DEFAULT_SZ / (double) min(head.x2-head.x1, head.y2-head.y1);
 			image_ptr patch2 = image_resize(patch, scale2);
-			image_delete(patch);
+            image_delete(patch);
 			vector<bbox_t> facesfp = facemodel_detect(facemodel, patch2, facemodel->thresh);
 			if(!facesfp.empty()) {
 				bbox_v_resize(facesfp, 1/scale2);

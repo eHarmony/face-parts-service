@@ -89,37 +89,40 @@ void dt1d(const double* src, double* dst, int* ptr, int sstep, int slen,
 	 * z - locations of boundaries between parabolas
 	 * q - running index
 	 * s - intersection between two parabolas
-	 */
-	int k=0;
+     */
+    int k=0;
 	int q=0;
-	v[0] = 0;
-	z[0] = -EH_INF;
-	z[1] = +EH_INF;
+    v[0] = 0;
+    z[0] = -EH_INF;
+    z[1] = +EH_INF;
+    double twoA = 2*a;
 
-	for (q = 1; q <= slen-1; q++) {
-		double s = ((src[q*sstep]-src[v[k]*sstep])-b*(q-v[k])+a*(square(q)-square(v[k]))) / (2*a*(q-v[k]));
-		while(s <= z[k]) {
-			k--;
-			s = ((src[q*sstep]-src[v[k]*sstep])-b*(q-v[k])+a*(square(q)-square(v[k]))) / (2*a*(q-v[k]));
-		}
-		k++;
-		v[k] = q;
-		z[k] = s;
-		z[k+1] = +EH_INF;
+    for (q = 1; q < slen; ++q) {
+        int qSstep = q*sstep;
+        int qSquare = square(q);
+        double s = ((src[qSstep]-src[v[k]*sstep])-b*(q-v[k])+a*(qSquare-square(v[k]))) / (twoA*(q-v[k]));
+        while(s <= z[k]) {
+            k--;
+            s = ((src[qSstep]-src[v[k]*sstep])-b*(q-v[k])+a*(qSquare-square(v[k]))) / (twoA*(q-v[k]));
+        }
+        ++k;
+        v[k] = q;
+        z[k] = s;
+        z[k+1] = +EH_INF;
 	}
 
-	k = 0;
+    k = 0;
 	q = dshift;
 
 	/* fill in values of distance transform */
-	for(int i=0; i <= dlen-1; i++) {
-		while(z[k+1] < q)
-			k++;
-		dst[i*sstep] = a*square(q-v[k])+b*(q-v[k])+src[v[k]*sstep];
-		ptr[i*sstep] = v[k];
+    for(int i=0; i < dlen; ++i) {
+        while(z[k+1] < q)
+            k++;
+        dst[i*sstep] = a*square(q-v[k])+b*(q-v[k])+src[v[k]*sstep];
+        ptr[i*sstep] = v[k];
 		q += dstep;
 	}
 
-	delete[] z;
-	delete[] v;
+    delete[] z;
+    delete[] v;
 }
