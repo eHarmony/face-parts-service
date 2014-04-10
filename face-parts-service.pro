@@ -4,7 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core network gui
+QT       += core network
+
+QT       -= gui
 
 TARGET = face-parts-service
 CONFIG   += console

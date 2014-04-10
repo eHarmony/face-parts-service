@@ -5,12 +5,13 @@
  * 2012-07 @ eH
  */
 
+#define cimg_display 0
+#define cimg_use_jpeg
+
+#include <CImg.h>
 #include "eHimage.h"
 #include "eHbox.h"
-#include <cmath>
 
-#include <QImage>
-#include <QRgb>
 #include <assert.h>
 #include <string.h>
 #include <weblogger.h>
@@ -76,22 +77,22 @@ void image_zero(image_ptr img, const double* val) {
 }
 
 image_ptr image_readJPG(const char* filename) {
-    QImage img(filename);
-    if(img.isNull()) {
+    cimg_library::CImg<int> img;
+    img.load_jpeg(filename);
+    if(!img.data()) {
         WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not open ") + filename);
-		return NULL;
+        return NULL;
     }
     image_ptr im = image_alloc(img.height(), img.width());
-	for(unsigned y=0;y<im->sizy;y++) {
+    for(unsigned y=0;y<im->sizy;y++) {
         for(unsigned x=0;x<im->sizx;x++) {
             int offset = y+x*im->stepy;
-            QRgb pixel = img.pixel(x, y);
-            im->ch[0][offset] = qRed(pixel);
-            im->ch[1][offset] = qGreen(pixel);
-            im->ch[2][offset] = qBlue(pixel);
-		}
+            im->ch[0][offset]=img(x, y, 0, 0);
+            im->ch[1][offset]=img(x, y, 0, 1);
+            im->ch[2][offset]=img(x, y, 0, 2);
+        }
     }
-	return im;
+    return im;
 }
 
 /* struct used for caching interpolation values */
