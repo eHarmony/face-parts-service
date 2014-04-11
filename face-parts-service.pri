@@ -39,7 +39,7 @@ SOURCES += \
     $$PWD/weblogger.cpp
 
 macx {
-    INCLUDEPATH += /usr/local/include /opt/local/include
+    INCLUDEPATH += /usr/local/include /opt/local/include /usr/local/include/tbb/
     LIBS += -L/usr/local/lib
 }
 
@@ -48,4 +48,4 @@ unix:!macx {
     LIBS += -L/usr/lib64/atlas/ -L/usr/lib64
 }
 
-LIBS += -ljpeg -lcblas
+LIBS += -ljpeg -lcblas -ltbb
