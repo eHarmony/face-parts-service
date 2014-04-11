@@ -54,6 +54,7 @@ QJsonDocument GetFaceRequest::getJSONFaces(QFile *file) {
             parts.append(part);
         }
         faceParts["parts"] = parts;
+        faceParts["pose"] = faceBox.pose;
         faces.append(faceParts);
     }
     QJsonDocument doc(faces);

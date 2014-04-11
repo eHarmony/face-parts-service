@@ -43,7 +43,7 @@ static inline int round2int(double x) { return (int)(x+0.5);}
  * takes a double color image and a bin size 
  * returns HOG features
  */
-mat3d_ptr eHhog(const image_ptr img, int sbin) {
+mat3d_t* eHhog(const image_t* img, int sbin) {
 
   /* memory for caching orientation histograms & their norms */
   int dims[2] = {img->sizy, img->sizx};
@@ -62,7 +62,7 @@ mat3d_ptr eHhog(const image_ptr img, int sbin) {
   out[0] = max(blocks[0]-2, 0);
   out[1] = max(blocks[1]-2, 0);
   out[2] = 27+4+1;
-  mat3d_ptr feat = mat3d_alloc(out[0],out[1],out[2]);
+  mat3d_t* feat = mat3d_alloc(out[0],out[1],out[2]);
   
   int visible[2];
   visible[0] = blocks[0]*sbin;

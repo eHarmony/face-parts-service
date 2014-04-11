@@ -15,43 +15,33 @@
 #include <vector>
 using std::vector;
 
-/** @struct eHbox_f
+/** @struct fbox_t
  *  @brief box with floating-point boundaries
  *
  *  Boxes are defined as tuples (x1, y1, x2, y2), where 
  *  x1<=x2, y1<=y2; so (x1,y1) is the top-left corner, 
  *  (x2,y2) is the bottom-right corner.
  */
-struct eHbox_f {
+struct fbox_t {
 	double x1; /**< @brief left bound */
 	double y1; /**< @brief up bound */
 	double x2; /**< @brief right bound */
 	double y2; /**< @brief bottom bound */
 };
 
-/** @typedef fbox_t
- *  @brief box with floating-point boundaries
- */
-typedef struct eHbox_f fbox_t;
-
-/** @struct eHbox_i
+/** @struct ibox_t
  *  @brief box with integer boundaries
  *
  *  Boxes are defined as tuples (x1, y1, x2, y2), where 
  *  x1<=x2, y1<=y2; so (x1,y1) is the top-left corner, 
  *  (x2,y2) is the bottom-right corner.
  */
-struct eHbox_i {
+struct ibox_t {
 	int x1; /**< @brief left bound */
 	int y1; /**< @brief up bound */
 	int x2; /**< @brief right bound */
 	int y2; /**< @brief bottom bound */
 };
-
-/** @typedef ibox_t
- *  @brief box with integer boundaries
- */
-typedef struct eHbox_i ibox_t;
 
 /** @brief Set values for given box
  */

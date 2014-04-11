@@ -12,7 +12,7 @@
 static inline int min(int x, int y) { return (x <= y ? x : y); }
 static inline int max(int x, int y) { return (x <= y ? y : x); }
 
-featpyra_t* featpyra_create(const image_ptr im, int interval, int sbin, const int* maxsize, bool hallucinate) {
+featpyra_t* featpyra_create(const image_t* im, int interval, int sbin, const int* maxsize, bool hallucinate) {
 	featpyra_t* pyra = new featpyra_t;
 
 	/* select padding, allowing for one cell in model to be visible
@@ -26,7 +26,7 @@ featpyra_t* featpyra_create(const image_ptr im, int interval, int sbin, const in
 	image_t* tmp;
 	pyra->len = min_level+1;
 	if(hallucinate) pyra->len += interval;
-	pyra->feat = new mat3d_ptr[pyra->len];
+	pyra->feat = new mat3d_t*[pyra->len];
 	pyra->scale = new double[pyra->len];
 	for(int i=0;i<interval;i++) {
 		/* first 2 octave */

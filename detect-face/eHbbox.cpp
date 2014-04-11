@@ -1,5 +1,5 @@
 /*
- * eHbbox.cpp
+ * bbox_t.cpp
  *
  * Hang Su
  * 2012-08 @ eH

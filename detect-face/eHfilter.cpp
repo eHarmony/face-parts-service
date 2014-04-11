@@ -89,8 +89,8 @@ void *process(void *thread_arg) {
  * entry point
  * resp = eHconv(cell of B, A, start, end);
  */
-mat3d_ptr filterv_apply(const vector<filter_t> filters, const mat3d_ptr feats, int start, int end) {
- //void  eHconv(vector<mat2d_ptr>& resps, const mat3d_ptr feats, const vector<filter_t> filters, int start, int end) {
+mat3d_t* filterv_apply(const vector<filter_t> filters, const mat3d_t* feats, int start, int end) {
+ //void  eHconv(vector<mat2d_t*>& resps, const mat3d_t* feats, const vector<filter_t> filters, int start, int end) {
 
   unsigned len = end-start+1;
   assert(end>=start);
@@ -102,7 +102,7 @@ mat3d_ptr filterv_apply(const vector<filter_t> filters, const mat3d_ptr feats, i
   int height = feats->sizy - filter_h + 1;
   int width = feats->sizx - filter_w + 1;
   assert(height>=1 && width>=1);
-  mat3d_ptr resps= mat3d_alloc(height, width, filters.size());
+  mat3d_t* resps= mat3d_alloc(height, width, filters.size());
   /*XXX necessary */
   for(unsigned i=0;i<resps->sizx*resps->sizy*resps->sizz;i++)
 	  resps->vals[i]=0;
@@ -171,7 +171,7 @@ void *process_ST(void *thread_arg) {
   return NULL;
 }
 
-mat3d_ptr filterv_apply_ST(const vector<filter_t> filters, const mat3d_ptr feats, int start, int end) {
+mat3d_t* filterv_apply_ST(const vector<filter_t> filters, const mat3d_t* feats, int start, int end) {
   unsigned len = end-start+1;
   assert(end>=start);
   assert(len<=filters.size());
@@ -181,7 +181,7 @@ mat3d_ptr filterv_apply_ST(const vector<filter_t> filters, const mat3d_ptr feats
   int height = feats->sizy - filter_h + 1;
   int width = feats->sizx - filter_w + 1;
   assert(height>=1 && width>=1);
-  mat3d_ptr resps= mat3d_alloc(height, width, filters.size());
+  mat3d_t* resps= mat3d_alloc(height, width, filters.size());
   /*XXX necessary? */
   for(unsigned i=0;i<resps->sizx*resps->sizy*resps->sizz;i++)
 	  resps->vals[i]=0;

@@ -21,7 +21,7 @@ void fbox_set(fbox_t* box, double x1, double y1, double x2, double y2) {
 }
 
 ibox_t fbox_getibox(fbox_t* box) {
-	ibox_t intbox;
+    ibox_t intbox;
 	intbox.x1 = round2int(box->x1);
 	intbox.x2 = round2int(box->x2);
 	intbox.y1 = round2int(box->y1);
@@ -57,7 +57,7 @@ fbox_t fbox_merge(const vector<fbox_t>& boxes, const int* idxs, int num, const d
 		tmp_y1 = min(tmp_y1,boxes[idxs[i]].y1);
 		tmp_y2 = max(tmp_y2,boxes[idxs[i]].y2);
 	}
-	fbox_t merged;
+    fbox_t merged;
 	if(padding!=NULL) {
 		double w = tmp_x2-tmp_x1;
 		double h = tmp_y2-tmp_y1;
@@ -70,13 +70,13 @@ fbox_t fbox_merge(const vector<fbox_t>& boxes, const int* idxs, int num, const d
 }
 
 fbox_t fbox_getResized(const fbox_t& box, double scale) {
-	fbox_t resized;
+    fbox_t resized;
 	fbox_set(&resized, box.x1*scale, box.y1*scale, box.x2*scale, box.y2*scale);
 	return resized;
 }
 
 fbox_t fbox_getMoved(const fbox_t& box, const int* offset) {
-	fbox_t moved;
+    fbox_t moved;
 	fbox_set(&moved, box.x1+offset[1], box.y1+offset[0], box.x2+offset[1], box.y2+offset[0]);
 	return moved;
 }

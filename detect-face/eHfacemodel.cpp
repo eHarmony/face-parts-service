@@ -77,8 +77,8 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 	xml_node<>* obj = root->first_node("obj");
 
 	int field_width=-1;
-	int* tmp_int_ptr;	
-	double* tmp_double_ptr;
+    int* tmp_int_ptr;
+    double* tmp_double_ptr;
 
 	/* model->filters : vector<filter_t> */
 	int num_filters = strtol(filters->first_attribute("num")->value(),NULL,10);
@@ -89,15 +89,15 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 		/*1st filter*/
 	tmp_facefilter.i = strtol(filter_i->value(),NULL,10);
 	field_width = -1;
-	tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
+    tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
 	assert(field_width==3);
-	tmp_facefilter.w.sizy = tmp_int_ptr[0];
-	tmp_facefilter.w.sizx = tmp_int_ptr[1];
-	tmp_facefilter.w.sizz = tmp_int_ptr[2];
+    tmp_facefilter.w.sizy = tmp_int_ptr[0];
+    tmp_facefilter.w.sizx = tmp_int_ptr[1];
+    tmp_facefilter.w.sizz = tmp_int_ptr[2];
 	field_width = -1;
 	tmp_facefilter.w.vals = parseCSVstr2double(filter_w->value(),&field_width);
-	assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
-	delete[] tmp_int_ptr;
+    assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
+    delete[] tmp_int_ptr;
 	model->filters.push_back(tmp_facefilter);
 		/*other filters*/
 	for(int i = 1; i<num_filters; i++){
@@ -106,15 +106,15 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 		filter_w = filter->first_node("w");
 		tmp_facefilter.i = strtol(filter_i->value(),NULL,10);
 		field_width = -1;
-		tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
+        tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
 		assert(field_width==3);
-		tmp_facefilter.w.sizy = tmp_int_ptr[0];
-		tmp_facefilter.w.sizx = tmp_int_ptr[1];
-		tmp_facefilter.w.sizz = tmp_int_ptr[2];
+        tmp_facefilter.w.sizy = tmp_int_ptr[0];
+        tmp_facefilter.w.sizx = tmp_int_ptr[1];
+        tmp_facefilter.w.sizz = tmp_int_ptr[2];
 		field_width = -1; 
 		tmp_facefilter.w.vals = parseCSVstr2double(filter_w->value(),&field_width);
-		assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
-		delete[] tmp_int_ptr;
+        assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
+        delete[] tmp_int_ptr;
 		model->filters.push_back(tmp_facefilter);
 	}
 
@@ -128,21 +128,21 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 		/*1st def*/
 	tmp_facedef.i = strtol(def_i->value(),NULL,10);
 	field_width = -1;
-	tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
+    tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
 	assert(field_width==1);
 	field_width = -1;
-	tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
-	assert(field_width==tmp_int_ptr[0]);
-	for(int ii=0;ii<field_width;ii++) tmp_facedef.w[ii]=tmp_double_ptr[ii];
-	delete[] tmp_int_ptr;
-	delete[] tmp_double_ptr;
+    tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
+    assert(field_width==tmp_int_ptr[0]);
+    for(int ii=0;ii<field_width;ii++) tmp_facedef.w[ii]=tmp_double_ptr[ii];
+    delete[] tmp_int_ptr;
+    delete[] tmp_double_ptr;
 	field_width = -1;
-	tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
+    tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
 	assert(field_width==3);
-	tmp_facedef.anchor[0]=tmp_int_ptr[0]-1;
-	tmp_facedef.anchor[1]=tmp_int_ptr[1]-1;
-	tmp_facedef.anchor[2]=tmp_int_ptr[2];
-	delete[] tmp_int_ptr;
+    tmp_facedef.anchor[0]=tmp_int_ptr[0]-1;
+    tmp_facedef.anchor[1]=tmp_int_ptr[1]-1;
+    tmp_facedef.anchor[2]=tmp_int_ptr[2];
+    delete[] tmp_int_ptr;
 	model->defs.push_back(tmp_facedef);
 		/*other defs*/
 	for(int i=1;i<num_defs;i++){
@@ -152,21 +152,21 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 		def_anchor = def->first_node("anchor");
 		tmp_facedef.i = strtol(def_i->value(),NULL,10);
 		field_width = -1;
-		tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
+        tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
 		assert(field_width==1);
 		field_width = -1;
-		tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
-		assert(field_width==tmp_int_ptr[0]);
-		for(int ii=0;ii<field_width;ii++) tmp_facedef.w[ii]=tmp_double_ptr[ii];
-		delete[] tmp_int_ptr;
-		delete[] tmp_double_ptr;
+        tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
+        assert(field_width==tmp_int_ptr[0]);
+        for(int ii=0;ii<field_width;ii++) tmp_facedef.w[ii]=tmp_double_ptr[ii];
+        delete[] tmp_int_ptr;
+        delete[] tmp_double_ptr;
 		field_width = -1;
-		tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
+        tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
 		assert(field_width==3);
-		tmp_facedef.anchor[0]=tmp_int_ptr[0]-1;
-		tmp_facedef.anchor[1]=tmp_int_ptr[1]-1;
-		tmp_facedef.anchor[2]=tmp_int_ptr[2];
-		delete[] tmp_int_ptr;
+        tmp_facedef.anchor[0]=tmp_int_ptr[0]-1;
+        tmp_facedef.anchor[1]=tmp_int_ptr[1]-1;
+        tmp_facedef.anchor[2]=tmp_int_ptr[2];
+        delete[] tmp_int_ptr;
 		model->defs.push_back(tmp_facedef);
 	}
 
@@ -216,11 +216,11 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 
 	/* model->maxsize : int[2] */
 	field_width = -1;
-	tmp_int_ptr=parseCSVstr2int(maxsize->first_attribute("size")->value(),&field_width);
+    tmp_int_ptr=parseCSVstr2int(maxsize->first_attribute("size")->value(),&field_width);
 	assert(field_width==2);
-	model->maxsize[0]=tmp_int_ptr[0];
-	model->maxsize[1]=tmp_int_ptr[1];
-	delete[] tmp_int_ptr;
+    model->maxsize[0]=tmp_int_ptr[0];
+    model->maxsize[1]=tmp_int_ptr[1];
+    delete[] tmp_int_ptr;
 
 	/* model->len : int */
 	model->len = strtol(len->first_attribute("val")->value(),NULL,10);
@@ -241,22 +241,22 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 	model->obj = strtod(obj->first_attribute("val")->value(),NULL);
 
 	/* additional fields (not from file) */
-	facepart_t* part_ptr;
+    facepart_t* part_ptr;
 	int par, ax, ay, ds, step, virtpady, virtpadx;
 	for (unsigned i=0;i<model->components.size();i++){
 		for (unsigned j=0; j<model->components[i].size();j++) {
-			part_ptr = &(model->components[i][j]);
-			part_ptr->sizy = model->filters[part_ptr->filterid].w.sizy;
-			part_ptr->sizx = model->filters[part_ptr->filterid].w.sizx;
+            part_ptr = &(model->components[i][j]);
+            part_ptr->sizy = model->filters[part_ptr->filterid].w.sizy;
+            part_ptr->sizx = model->filters[part_ptr->filterid].w.sizx;
 			/* store the offset and scale of each part relative to the root */
-			ax = model->defs[part_ptr->defid].anchor[0];
-			ay = model->defs[part_ptr->defid].anchor[1];
-			ds = model->defs[part_ptr->defid].anchor[2];
-			if ((par = part_ptr->parent)>=0) {
-				part_ptr->scale = ds + model->components[i][par].scale;
+            ax = model->defs[part_ptr->defid].anchor[0];
+            ay = model->defs[part_ptr->defid].anchor[1];
+            ds = model->defs[part_ptr->defid].anchor[2];
+            if ((par = part_ptr->parent)>=0) {
+                part_ptr->scale = ds + model->components[i][par].scale;
 			} else {
 				assert(j==0);
-				part_ptr->scale = 0;
+                part_ptr->scale = 0;
 			}
 			assert(par<(int)j);
 			/* amount of (virtual) padding to hallucinate */
@@ -265,9 +265,9 @@ facemodel_t* facemodel_parseXml(char* xmlstr) {
 			virtpady = (step-1)*max(model->maxsize[0]-1-1,0);
 			virtpadx = (step-1)*max(model->maxsize[1]-1-1,0);
 			/* starting points (simulates additional padding at finer scales */
-			part_ptr->starty = ay-virtpady;
-			part_ptr->startx = ax-virtpadx;
-			part_ptr->step = step;
+            part_ptr->starty = ay-virtpady;
+            part_ptr->startx = ax-virtpadx;
+            part_ptr->step = step;
 		}
 	}
 
@@ -284,7 +284,25 @@ facemodel_t* facemodel_readFromFile(const char* filepath) {
 	fin.read(xmlstr,length);
 	xmlstr[length] = '\0';
 	fin.close();
-	facemodel_t* model = facemodel_parseXml(xmlstr);
+    facemodel_t* model = facemodel_parseXml(xmlstr);
+
+    if (model->components.size() == 13) {
+        for (int i=90; i>=-90; i-=15) {
+            model->posemap.push_back(i);
+        }
+    }
+    else if (model->components.size() == 18) {
+        for (int i=90; i>=15; i-=15) {
+            model->posemap.push_back(i);
+        }
+        for (int i=0; i<6; ++i) {
+            model->posemap.push_back(0);
+        }
+        for (int i=-15; i>=-90; i-=15) {
+            model->posemap.push_back(i);
+        }
+    }
+
 	delete[] xmlstr;
 	return model;
 }
@@ -299,11 +317,11 @@ struct facepart_data {
 	int level;
 };
 
-vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img) {
+vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_t* img) {
 	return facemodel_detect(model, img, model->thresh);
 }
-vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, double thrs) {
-	vector<bbox_t> boxes;
+vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_t* img, double thrs) {
+    vector<bbox_t> boxes;
 #ifdef EH_TEST_TIMER
 	timeval start_detect, end_detect, interval_detect;
 	gettimeofday(&start_detect, NULL);
@@ -322,8 +340,8 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, d
 	printf("Pyramid in seconds: %ld.%ld seconds\n", (interval_pyra.tv_sec), (interval_pyra.tv_usec));
 #endif
 
-	mat3d_ptr* resp = new mat3d_ptr[pyra->len];
-	memset(resp, 0, pyra->len*sizeof(mat3d_ptr));
+    mat3d_t** resp = new mat3d_t*[pyra->len];
+    memset(resp, 0, pyra->len*sizeof(mat3d_t*));
  	/* index changed from matlab 0-1 style to C style:
 	 * 	level
 	 */
@@ -467,6 +485,16 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, d
 
 	for (unsigned i=0; i<boxes.size(); i++)
 		bbox_clipboxes(boxes[i],imsize);
+
+    if (!model->posemap.empty()) {
+        for (vector<bbox_t>::iterator iter = boxes.begin(); iter != boxes.end(); ++iter) {
+            int component = iter->component;
+            if (component >=0 && component < (int)model->posemap.size()) {
+                iter->pose = model->posemap[component];
+            }
+        }
+    }
+
 	bbox_v_nms(boxes, 0.3);
 
 #ifdef EH_TEST_TIMER
@@ -479,19 +507,19 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, d
 	return boxes;
 }
 
-vector<bbox_t> facemodel_detect(const facemodel_t* facemodel, const posemodel_t* posemodel, const image_ptr img) {
+vector<bbox_t> facemodel_detect(const facemodel_t* facemodel, const posemodel_t* posemodel, const image_t* img) {
 	double scale1 = EH_IMG_DEFAULT_SZ / (double) min(img->sizx,img->sizy);
-	image_ptr img1;
+    image_t* img1;
 	//if(scale1<1)
 	//	img1 = image_subsample(img, scale1);
 	//else
 		img1 = image_resize(img, scale1);
 	/* 1st step, detect face in scaled image */
-	vector<bbox_t> faces = facemodel_detect(facemodel, img1, facemodel->thresh);
+    vector<bbox_t> faces = facemodel_detect(facemodel, img1, facemodel->thresh);
 	/* only ask for help of body detection if no faces are detected */
 	if(faces.empty()) {
 		/* 2nd step, detect body */
-		vector<bbox_t> poses = posemodel_detect(posemodel, img1, posemodel->thresh);
+        vector<bbox_t> poses = posemodel_detect(posemodel, img1, posemodel->thresh);
 		image_delete(img1);
 		/* if no body detected, give up */
 		if(poses.empty())
@@ -502,17 +530,17 @@ vector<bbox_t> facemodel_detect(const facemodel_t* facemodel, const posemodel_t*
 		int idxslen_head = 2;
 		double padding[] = {0.25, 0.25, 0.25, 0};
 		for(unsigned i=0;i<poses.size();i++) {
-			bbox_t pose = poses[i];
+            bbox_t pose = poses[i];
 			fbox_t head = fbox_merge(pose.boxes, idxs_head, 
 					idxslen_head, padding);
 			fbox_resize(&head, 1/scale1);
 			fbox_clip(head,img->imsize);
 			int offset[2];
-			image_ptr patch = image_crop(img, head, (int*)&offset);
+            image_t* patch = image_crop(img, head, (int*)&offset);
 			double scale2 = EH_IMG_DEFAULT_SZ / (double) min(head.x2-head.x1, head.y2-head.y1);
-			image_ptr patch2 = image_resize(patch, scale2);
+            image_t* patch2 = image_resize(patch, scale2);
             image_delete(patch);
-			vector<bbox_t> facesfp = facemodel_detect(facemodel, patch2, facemodel->thresh);
+            vector<bbox_t> facesfp = facemodel_detect(facemodel, patch2, facemodel->thresh);
 			if(!facesfp.empty()) {
 				bbox_v_resize(facesfp, 1/scale2);
 				bbox_v_move(facesfp, offset);

@@ -27,15 +27,6 @@ void GetFaceRequestTest::badFile()
     QCOMPARE(500, response.getStatus());
 }
 
-void GetFaceRequestTest::noFace() {
-    QFile file(testResources + "/48170621_4.jpg");
-    QJsonDocument doc = faceRequest->getJSONFaces(&file);
-    QJsonArray array;
-    QJsonDocument emptyDoc(array);
-
-    QCOMPARE(emptyDoc, doc);
-}
-
 void GetFaceRequestTest::goodFace() {
     testFaces("1");
 }
@@ -46,6 +37,15 @@ void GetFaceRequestTest::profile() {
 
 void GetFaceRequestTest::faceFromPose() {
     testFaces("10156670_4");
+}
+
+void GetFaceRequestTest::noFace() {
+    QFile file(testResources + "/48170621_4.jpg");
+    QJsonDocument doc = faceRequest->getJSONFaces(&file);
+    QJsonArray array;
+    QJsonDocument emptyDoc(array);
+
+    QCOMPARE(emptyDoc, doc);
 }
 
 void GetFaceRequestTest::testFaces(const QString& fileName) {
@@ -74,6 +74,8 @@ void GetFaceRequestTest::testFaces(const QString& fileName) {
         compareDoubles(cFace["x2"].toDouble(), eFace["x2"].toDouble(), 0.0001);
         compareDoubles(cFace["y1"].toDouble(), eFace["y1"].toDouble(), 0.0001);
         compareDoubles(cFace["y2"].toDouble(), eFace["y2"].toDouble(), 0.0001);
+
+        QCOMPARE(cFaceParts["pose"], eFaceParts["pose"]);
 
         QJsonArray cParts = cFaceParts["parts"].toArray();
         QJsonArray eParts = eFaceParts["parts"].toArray();

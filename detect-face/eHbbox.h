@@ -1,4 +1,4 @@
-/** @file eHbbox.h
+/** @file bbox_t.h
  *  @brief Multi-box bounding box type and operations
  *
  *  A "bounding box" is defined as a collection of boxes, which serve as 
@@ -7,8 +7,8 @@
  * @author Hang Su
  * @date 2012-08-13
  */
-#ifndef EHBBOX_H
-#define EHBBOX_H
+#ifndef bbox_t_H
+#define bbox_t_H
 
 #include "eHbox.h"
 
@@ -21,21 +21,17 @@
  */
 #define EH_BBOXS_PRUNE 30000
 
-/** @struct eHbbox
+/** @struct bbox_t
  *  @brief Multi-box "bounding box", used for detection result
  */
-struct eHbbox {
+struct bbox_t {
 	std::vector<fbox_t> boxes; /**< @brief part locations */
 	double score; /**< @brief detection score @warning not calibrated */
 	int component; /**< @brief component number for certain models */
 	fbox_t outer; /**< @brief outer "real" bounding box of the detection */
 	double area; /**< @brief area of outer */
+    int pose; /**< @brief the pose or direction of the face */
 };
-
-/** @typedef bbox_t
- *  @brief Multi-box "bounding box", used for detection result
- */
-typedef struct eHbbox bbox_t;
 
 /** @brief Filling the fields of given bbox: outer, area
  */

@@ -38,10 +38,10 @@ typedef struct part_face {
 	int step;
 } facepart_t;
 
-/** @struct eHfacemodel
+/** @struct facemodel_t
  *  @brief Face detection model
  */
-struct eHfacemodel {
+struct facemodel_t {
 	vector<filter_t> filters; 		/**< @brief part filters 
 						  @note All part filters should be 
 						  of the same size*/
@@ -54,12 +54,8 @@ struct eHfacemodel {
 	double delta; 				/**< @brief not used */
 	double thresh; 				/**< @brief threshold for detection score */
 	double obj; 				/**< @brief not used */
+    vector<int> posemap;      /**< @brief the possible poses for the face, to find the pose use the number of components in the part result */
 };
-
-/** @typedef facemodel_t
- *  @brief Face detection model
- */
-typedef struct eHfacemodel facemodel_t;
 
 /** @brief Parse face model from xml style string
  *  @note xmlstr is modified during parsing, this can be avoided by 
@@ -78,14 +74,14 @@ facemodel_t* facemodel_readFromFile(const char* filepath);
  *  @param thrs threshold used for pruning results
  *  @return array of detected faces (together with part locations)
  */
-vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img, double thrs);
+vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_t* img, double thrs);
 
 /** @brief Perform face detection using threshold inside model
  *  @param model face detection model
  *  @param img where to find faces from
  *  @return array of detected faces (together with part locations)
  */
-vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img);
+vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_t* img);
 
 /** @brief Perform face detection with help of body detection using 
  *  thresholds inside models
@@ -94,7 +90,7 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_ptr img);
  *  @param img where to find faces from
  *  @return array of detected faces (together with part locations)
  */
-vector<bbox_t> facemodel_detect(const facemodel_t* facemodel, const posemodel_t* posemodel, const image_ptr img);
+vector<bbox_t> facemodel_detect(const facemodel_t* facemodel, const posemodel_t* posemodel, const image_t* img);
 
 /** @brief Delete a face model, release related memory
  */

@@ -18,8 +18,8 @@
 
 static inline int round2int(double x) { return (int)(x+0.5);}
 
-image_ptr image_alloc(size_t sizy, size_t sizx, size_t nch){
-	image_ptr img = new struct eHimage;
+image_t* image_alloc(size_t sizy, size_t sizx, size_t nch){
+    image_t* img = new struct image_t;
 	img->sizy = sizy;
 	img->sizx = sizx;
 	img->nchannel = nch;
@@ -36,8 +36,8 @@ image_ptr image_alloc(size_t sizy, size_t sizx, size_t nch){
 	return img;
 }
 
-image_ptr image_alloc(size_t sizy, size_t sizx, size_t nch, const double* fillval) {
-	image_ptr img = new struct eHimage;
+image_t* image_alloc(size_t sizy, size_t sizx, size_t nch, const double* fillval) {
+    image_t* img = new struct image_t;
 	img->sizy = sizy;
 	img->sizx = sizx;
 	img->nchannel = nch;
@@ -57,7 +57,7 @@ image_ptr image_alloc(size_t sizy, size_t sizx, size_t nch, const double* fillva
 	return img;
 }
 
-void image_delete(image_ptr img){
+void image_delete(image_t* img){
 	if(NULL==img)
 		return;
 	if(!img->is_shared) {
@@ -67,7 +67,7 @@ void image_delete(image_ptr img){
 	delete img;
 }
 
-void image_zero(image_ptr img, const double* val) {
+void image_zero(image_t* img, const double* val) {
 	if(img==NULL || img->data==NULL || val==NULL) return;
 	unsigned ch, y, x;
 	for(ch=0; ch<img->nchannel; ch++)
@@ -76,14 +76,14 @@ void image_zero(image_ptr img, const double* val) {
 				img->ch[ch][x*img->stepy+y]=val[ch];
 }
 
-image_ptr image_readJPG(const char* filename) {
+image_t* image_readJPG(const char* filename) {
     cimg_library::CImg<int> img;
     img.load_jpeg(filename);
     if(!img.data()) {
         WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not open ") + filename);
         return NULL;
     }
-    image_ptr im = image_alloc(img.height(), img.width());
+    image_t* im = image_alloc(img.height(), img.width());
     for(unsigned y=0;y<im->sizy;y++) {
         for(unsigned x=0;x<im->sizx;x++) {
             int offset = y+x*im->stepy;
@@ -114,8 +114,8 @@ void alphacopy(double* src, double*dst, struct alphainfo *ofs, int n) {
 
 /* resize along each column (result is transposed) */
 /* used by image_subsample() */
-void subsample1dtran(image_ptr src, size_t sheight, 
-		image_ptr dst, size_t dheight, size_t width) throw(std::bad_alloc){
+void subsample1dtran(const image_t* src, size_t sheight,
+		image_t* dst, size_t dheight, size_t width) throw(std::bad_alloc){
 	double scale = (double)dheight/(double)sheight;
 	double invscale = (double)sheight/(double)dheight;
 
@@ -164,14 +164,14 @@ void subsample1dtran(image_ptr src, size_t sheight,
 /** @brief Fast image subsampling
  *  @note src image is not destroyed
  */
-image_ptr image_subsample(const image_ptr img, double scale) {
+image_t* image_subsample(const image_t* img, double scale) {
 	if(scale>1 || scale <=0 || img==NULL || img->data==NULL)
 		return NULL;
 	size_t dst_sizy = (unsigned int)round2int(img->sizy*scale);
 	size_t dst_sizx = (unsigned int)round2int(img->sizx*scale);
 	double initialval[] = {0, 0, 0};
-	image_ptr scaled = image_alloc(dst_sizy, dst_sizx, img->nchannel, initialval);
-	image_ptr tmp = image_alloc(img->sizx,dst_sizy, img->nchannel, initialval);
+	image_t* scaled = image_alloc(dst_sizy, dst_sizx, img->nchannel, initialval);
+	image_t* tmp = image_alloc(img->sizx,dst_sizy, img->nchannel, initialval);
 	/* scale in columns, and transposed */
 	subsample1dtran(img,img->sizy,tmp,dst_sizy, img->sizx);
 	/* scale in (old)rows, and transposed back */
@@ -180,7 +180,7 @@ image_ptr image_subsample(const image_ptr img, double scale) {
 	return scaled;
 }
 
-void resize1dtran(image_ptr src, image_ptr dst) throw(std::bad_alloc){
+void resize1dtran(const image_t* src, image_t* dst) throw(std::bad_alloc){
 	double scale = (dst->sizx-1.0) / (src->sizy-1.0);
 	double invscale = 1/scale;
 	int* pre = new int[dst->sizx];
@@ -205,13 +205,13 @@ void resize1dtran(image_ptr src, image_ptr dst) throw(std::bad_alloc){
 	delete[] alpha;
 }
 
-image_ptr image_resize(const image_ptr img, double scale) {
+image_t* image_resize(const image_t* img, double scale) {
 	if(scale<=0 || img==NULL || img->data==NULL)
 		return NULL;
 	size_t dst_sizy = (unsigned)round2int(img->sizy*scale);
 	size_t dst_sizx = (unsigned)round2int(img->sizx*scale);
-	image_ptr scaled = image_alloc(dst_sizy, dst_sizx, img->nchannel);
-	image_ptr tmp = image_alloc(img->sizx, dst_sizy, img->nchannel);
+	image_t* scaled = image_alloc(dst_sizy, dst_sizx, img->nchannel);
+	image_t* tmp = image_alloc(img->sizx, dst_sizy, img->nchannel);
 	
 	/* scale in colums, and transposed */
 	resize1dtran(img,tmp);
@@ -223,8 +223,8 @@ image_ptr image_resize(const image_ptr img, double scale) {
 
 /* reduce along each column (result is transposed) */
 /* used by image_reduce() */
-void reduce1dtran(image_ptr src, size_t sheight, 
-		image_ptr dst, size_t dheight, size_t width) {
+void reduce1dtran(const image_t* src, size_t sheight,
+		image_t* dst, size_t dheight, size_t width) {
 	double *s, *d;
 	for (int nch = 0; nch<3; nch++) {
 		for (unsigned x = 0; x<width; x++) {
@@ -263,11 +263,11 @@ void reduce1dtran(image_ptr src, size_t sheight,
  * Reduce size to half, using 5-tap binomial filter for anti-aliasing
  * (see Burt & Adelson's Laplacian Pyramid paper for details)
  */
-image_ptr image_reduce(const image_ptr img) {
+image_t* image_reduce(const image_t* img) {
 	size_t dst_sizy = (unsigned int)round2int(img->sizy*.5);
 	size_t dst_sizx = (unsigned int)round2int(img->sizx*.5);
-	image_ptr scaled = image_alloc(dst_sizy, dst_sizx, img->nchannel);
-	image_ptr tmp = image_alloc(img->sizx,dst_sizy, img->nchannel);
+	image_t* scaled = image_alloc(dst_sizy, dst_sizx, img->nchannel);
+	image_t* tmp = image_alloc(img->sizx,dst_sizy, img->nchannel);
 
 	/* scale in columns, and transposed */
 	reduce1dtran(img,img->sizy,tmp,dst_sizy,img->sizx);
@@ -278,10 +278,10 @@ image_ptr image_reduce(const image_ptr img) {
 	return scaled;
 }
 
-image_ptr image_crop(const image_ptr img, fbox_t crop, int* offset, bool shared) {
-	image_ptr result;
+image_t* image_crop(const image_t* img, fbox_t crop, int* offset, bool shared) {
+	image_t* result;
 	fbox_clip(crop, img->imsize);
-	ibox_t intcrop = fbox_getibox(&crop);
+    ibox_t intcrop = fbox_getibox(&crop);
 	if(shared) {
 		result = new image_t;
 		result->sizx = intcrop.x2-intcrop.x1+1;

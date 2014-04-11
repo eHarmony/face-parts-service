@@ -42,10 +42,10 @@ typedef struct bias_pose {
 	double w;
 } posebias_t;
 
-/** @struct eHposemodel
+/** @struct posemodel_t
  *  @brief Human body/pose mdoel
  */
-struct eHposemodel {
+struct posemodel_t {
 	vector<posebias_t> biases; 	/**< @brief bias towards part combinations */
 	vector<filter_t> filters; 	/**< @brief part filters @note all filters should be of the same size */
 	vector<posedef_t> defs;  	/**< @brief deformation params */
@@ -57,11 +57,6 @@ struct eHposemodel {
 	double thresh; 			/**< @brief threshold for detection score */
 	double obj; 			/**< @brief not used */
 };
-
-/** @typedef posemode_t
- *  @brief Human body/pose model
- */
-typedef struct eHposemodel posemodel_t;
 
 /** @brief Parse body/pose model from xml style string
  *  @note xmlstr is modified during parsing, this can be avoided by 
@@ -80,14 +75,14 @@ posemodel_t* posemodel_readFromFile(const char* filepath);
  *  @param thrs threshold used for pruning results
  *  @return array of detected poses (together with part locations)
  */
-vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_ptr img, double thrs);
+vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_t* img, double thrs);
 
 /** @brief Perform body/pose detection using default threshold
  *  @param model pose detection model
  *  @param img where to find human poses from
  *  @return array of detected poses (together with part locations)
  */
-vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_ptr img);
+vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_t* img);
 
 /** @brief Delete a pose model, release related memory
  */

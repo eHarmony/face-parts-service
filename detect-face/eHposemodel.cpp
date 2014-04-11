@@ -48,8 +48,8 @@ posemodel_t* posemodel_parseXml(char* xmlstr) {
 	xml_node<>* obj = root->first_node("obj");
 
 	int field_width = -1;
-	int* tmp_int_ptr;
-	double* tmp_double_ptr;
+    int* tmp_int_ptr;
+    double* tmp_double_ptr;
 
 	/* model->biases : vector<posebias_t> */
 	int num_biases = strtol(biases->first_attribute("num")->value(),NULL,10);
@@ -80,15 +80,15 @@ posemodel_t* posemodel_parseXml(char* xmlstr) {
 		/*1st filter*/
 	tmp_posefilter.i = strtol(filter_i->value(),NULL,10);
 	field_width = -1;
-	tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
+    tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
 	assert(field_width==3);
-	tmp_posefilter.w.sizy = tmp_int_ptr[0];
-	tmp_posefilter.w.sizx = tmp_int_ptr[1];
-	tmp_posefilter.w.sizz = tmp_int_ptr[2];
+    tmp_posefilter.w.sizy = tmp_int_ptr[0];
+    tmp_posefilter.w.sizx = tmp_int_ptr[1];
+    tmp_posefilter.w.sizz = tmp_int_ptr[2];
 	field_width = -1;
 	tmp_posefilter.w.vals = parseCSVstr2double(filter_w->value(),&field_width);
-	assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
-	delete[] tmp_int_ptr;
+    assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
+    delete[] tmp_int_ptr;
 	model->filters.push_back(tmp_posefilter);
 		/*other filters*/
 	for(int i = 1; i<num_filters; i++){
@@ -97,15 +97,15 @@ posemodel_t* posemodel_parseXml(char* xmlstr) {
 		filter_w = filter->first_node("w");
 		tmp_posefilter.i = strtol(filter_i->value(),NULL,10);
 		field_width = -1;
-		tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
+        tmp_int_ptr = parseCSVstr2int(filter_w->first_attribute("size")->value(),&field_width);
 		assert(field_width==3);
-		tmp_posefilter.w.sizy = tmp_int_ptr[0];
-		tmp_posefilter.w.sizx = tmp_int_ptr[1];
-		tmp_posefilter.w.sizz = tmp_int_ptr[2];
+        tmp_posefilter.w.sizy = tmp_int_ptr[0];
+        tmp_posefilter.w.sizx = tmp_int_ptr[1];
+        tmp_posefilter.w.sizz = tmp_int_ptr[2];
 		field_width = -1; 
 		tmp_posefilter.w.vals = parseCSVstr2double(filter_w->value(),&field_width);
-		assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
-		delete[] tmp_int_ptr;
+        assert(field_width==tmp_int_ptr[0]*tmp_int_ptr[1]*tmp_int_ptr[2]);
+        delete[] tmp_int_ptr;
 		model->filters.push_back(tmp_posefilter);
 	}
 
@@ -119,21 +119,21 @@ posemodel_t* posemodel_parseXml(char* xmlstr) {
 		/*1st def*/
 	tmp_posedef.i = strtol(def_i->value(),NULL,10);
 	field_width = -1;
-	tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
-	assert(field_width==1);assert(tmp_int_ptr[0]==4);
+    tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
+    assert(field_width==1);assert(tmp_int_ptr[0]==4);
 	field_width = -1;
-	tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
-	assert(field_width==tmp_int_ptr[0]);
-	for(int ii=0;ii<field_width;ii++) tmp_posedef.w[ii]=tmp_double_ptr[ii];
-	delete[] tmp_int_ptr;
-	delete[] tmp_double_ptr;
+    tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
+    assert(field_width==tmp_int_ptr[0]);
+    for(int ii=0;ii<field_width;ii++) tmp_posedef.w[ii]=tmp_double_ptr[ii];
+    delete[] tmp_int_ptr;
+    delete[] tmp_double_ptr;
 	field_width = -1;
-	tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
+    tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
 	assert(field_width==3);
-	tmp_posedef.anchor[0]=tmp_int_ptr[0]-1;
-	tmp_posedef.anchor[1]=tmp_int_ptr[1]-1;
-	tmp_posedef.anchor[2]=tmp_int_ptr[2];
-	delete[] tmp_int_ptr;
+    tmp_posedef.anchor[0]=tmp_int_ptr[0]-1;
+    tmp_posedef.anchor[1]=tmp_int_ptr[1]-1;
+    tmp_posedef.anchor[2]=tmp_int_ptr[2];
+    delete[] tmp_int_ptr;
 	model->defs.push_back(tmp_posedef);
 		/*other defs*/
 	for(int i=1;i<num_defs;i++){
@@ -143,21 +143,21 @@ posemodel_t* posemodel_parseXml(char* xmlstr) {
 		def_anchor = def->first_node("anchor");
 		tmp_posedef.i = strtol(def_i->value(),NULL,10);
 		field_width = -1;
-		tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
+        tmp_int_ptr = parseCSVstr2int(def_w->first_attribute("size")->value(),&field_width);
 		assert(field_width==1);
 		field_width = -1;
-		tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
-		assert(field_width==tmp_int_ptr[0]);
-		for(int ii=0;ii<field_width;ii++) tmp_posedef.w[ii]=tmp_double_ptr[ii];
-		delete[] tmp_int_ptr;
-		delete[] tmp_double_ptr;
+        tmp_double_ptr = parseCSVstr2double(def_w->value(),&field_width);
+        assert(field_width==tmp_int_ptr[0]);
+        for(int ii=0;ii<field_width;ii++) tmp_posedef.w[ii]=tmp_double_ptr[ii];
+        delete[] tmp_int_ptr;
+        delete[] tmp_double_ptr;
 		field_width = -1;
-		tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
+        tmp_int_ptr = parseCSVstr2int(def_anchor->value(),&field_width);
 		assert(field_width==3);
-		tmp_posedef.anchor[0]=tmp_int_ptr[0]-1;
-		tmp_posedef.anchor[1]=tmp_int_ptr[1]-1;
-		tmp_posedef.anchor[2]=tmp_int_ptr[2];
-		delete[] tmp_int_ptr;
+        tmp_posedef.anchor[0]=tmp_int_ptr[0]-1;
+        tmp_posedef.anchor[1]=tmp_int_ptr[1]-1;
+        tmp_posedef.anchor[2]=tmp_int_ptr[2];
+        delete[] tmp_int_ptr;
 		model->defs.push_back(tmp_posedef);
 	}
 
@@ -197,11 +197,11 @@ posemodel_t* posemodel_parseXml(char* xmlstr) {
 
 	/* model->maxsize : int[2] */
 	field_width = -1;
-	tmp_int_ptr=parseCSVstr2int(maxsize->first_attribute("size")->value(),&field_width);
+    tmp_int_ptr=parseCSVstr2int(maxsize->first_attribute("size")->value(),&field_width);
 	assert(field_width==2);
-	model->maxsize[0]=tmp_int_ptr[0];
-	model->maxsize[1]=tmp_int_ptr[1];
-	delete[] tmp_int_ptr;
+    model->maxsize[0]=tmp_int_ptr[0];
+    model->maxsize[1]=tmp_int_ptr[1];
+    delete[] tmp_int_ptr;
 
 	/* model->len : int */
 	model->len = strtol(len->first_attribute("val")->value(),NULL,10);
@@ -223,37 +223,37 @@ posemodel_t* posemodel_parseXml(char* xmlstr) {
 	 * an assumption seems hold: all ds are the same, so only 1 scale and step 
 	 * stored for each part*/
 	int num, par, ds, step, virtpady, virtpadx;
-	posepart_t* part_ptr;
-	part_ptr = &(model->parts[0]);
-	part_ptr->startx = part_ptr->starty = NULL;
-	part_ptr->scale = 0; part_ptr->step = 1;
-	num = part_ptr->num;
-	part_ptr->sizy = new int[num];
-	part_ptr->sizx = new int[num];
+    posepart_t* part_ptr;
+    part_ptr = &(model->parts[0]);
+    part_ptr->startx = part_ptr->starty = NULL;
+    part_ptr->scale = 0; part_ptr->step = 1;
+    num = part_ptr->num;
+    part_ptr->sizy = new int[num];
+    part_ptr->sizx = new int[num];
 	for (int j=0;j<num;j++) {
-		part_ptr->sizy[j] = model->filters[part_ptr->filterid[j]].w.sizy;
-		part_ptr->sizx[j] = model->filters[part_ptr->filterid[j]].w.sizx;
+        part_ptr->sizy[j] = model->filters[part_ptr->filterid[j]].w.sizy;
+        part_ptr->sizx[j] = model->filters[part_ptr->filterid[j]].w.sizx;
 	}
 	for (unsigned i=1;i<model->parts.size();i++){
-		part_ptr = &(model->parts[i]);
-		par = part_ptr->parent;
+        part_ptr = &(model->parts[i]);
+        par = part_ptr->parent;
 		assert(par<(int)i);
-		num = part_ptr->num;
-		part_ptr->sizy = new int[num];
-		part_ptr->sizx = new int[num];
-		part_ptr->starty = new int[num];
-		part_ptr->startx = new int[num];
-		ds = model->defs[part_ptr->defid[0]].anchor[2];
+        num = part_ptr->num;
+        part_ptr->sizy = new int[num];
+        part_ptr->sizx = new int[num];
+        part_ptr->starty = new int[num];
+        part_ptr->startx = new int[num];
+        ds = model->defs[part_ptr->defid[0]].anchor[2];
 		step = (ds==0 ? 1 : int(pow(2.0,(double)ds)));
 		virtpady = (step-1)*max(model->maxsize[0]-1-1,0);
 		virtpadx = (step-1)*max(model->maxsize[1]-1-1,0);
-		part_ptr->step = step;
-		part_ptr->scale = ds + model->parts[par].scale;
-		for(int j=0;j<part_ptr->num;j++) {
-			part_ptr->sizy[j] = model->filters[part_ptr->filterid[j]].w.sizy;
-			part_ptr->sizx[j] = model->filters[part_ptr->filterid[j]].w.sizx;
-			part_ptr->starty[j] = model->defs[part_ptr->defid[j]].anchor[1]-virtpady;
-			part_ptr->startx[j] = model->defs[part_ptr->defid[j]].anchor[0]-virtpadx;
+        part_ptr->step = step;
+        part_ptr->scale = ds + model->parts[par].scale;
+        for(int j=0;j<part_ptr->num;j++) {
+            part_ptr->sizy[j] = model->filters[part_ptr->filterid[j]].w.sizy;
+            part_ptr->sizx[j] = model->filters[part_ptr->filterid[j]].w.sizx;
+            part_ptr->starty[j] = model->defs[part_ptr->defid[j]].anchor[1]-virtpady;
+            part_ptr->startx[j] = model->defs[part_ptr->defid[j]].anchor[0]-virtpadx;
 		}
 	}
 	return model;
@@ -285,13 +285,13 @@ struct posepart_data {
 	int level;
 };
 
-vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_ptr img, double thrs){
+vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_t* img, double thrs){
 	vector<bbox_t> boxes;
 
 	int imsize[] = {img->sizy, img->sizx};
 	featpyra_t* pyra = featpyra_create(img, model->interval, model->sbin, model->maxsize,false);
-	mat3d_ptr* resp = new mat3d_ptr[pyra->len];
-	memset(resp, 0, pyra->len*sizeof(mat3d_ptr));
+	mat3d_t** resp = new mat3d_t*[pyra->len];
+	memset(resp, 0, pyra->len*sizeof(mat3d_t*));
 	
 	int numparts = model->parts.size();
 	vector<posepart_data> parts_data;
@@ -494,7 +494,7 @@ vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_ptr img, d
 */
 	return boxes;
 }
-vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_ptr img) {
+vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_t* img) {
 	return posemodel_detect(model, img, model->thresh);
 }
 

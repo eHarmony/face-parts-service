@@ -13,4 +13,4 @@
  *  @return HOG feature matrix
  *  @note feature matrix is allocated inside, proper delete is necessary after use
  */
-mat3d_ptr eHhog(const image_ptr img, int sbin);
+mat3d_t* eHhog(const image_t* img, int sbin);

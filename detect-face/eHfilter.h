@@ -13,15 +13,10 @@
 /** @struct eHfilter
  *  @brief Image feature filter
  */
-struct eHfilter {
+struct filter_t {
 	int i; 		/**< @brief filter index, not used */
 	mat3d_t w;  	/**< @brief filter [y,x,f], where (y,x) is location, f is feature index */
 };
-
-/** @typedef filter_t
- *  @brief Image feature filter
- */
-typedef struct eHfilter filter_t;
 
 /** @brief Convolve a feature map with a set of filters - Multithreaded version
  *  @param filters a set of part filters
@@ -33,7 +28,7 @@ typedef struct eHfilter filter_t;
  *  @note cblas library is required
  *  @sa filterv_apply_ST()
  */
-mat3d_ptr filterv_apply(const std::vector<filter_t> filters, const mat3d_ptr feats, int start, int end);
+mat3d_t* filterv_apply(const std::vector<filter_t> filters, const mat3d_t* feats, int start, int end);
 
 /** @brief Convolve a feature map with a set of filters - Singlethreaded version
  *  @param filters a set of part filters
@@ -44,6 +39,6 @@ mat3d_ptr filterv_apply(const std::vector<filter_t> filters, const mat3d_ptr fea
  *  @note filter responses is allocated inside, proper delete is necessary after use
  *  @sa filterv_apply()
  */
-mat3d_ptr filterv_apply_ST(const std::vector<filter_t> filters, const mat3d_ptr feats, int start, int end);
+mat3d_t* filterv_apply_ST(const std::vector<filter_t> filters, const mat3d_t* feats, int start, int end);
 
 #endif
