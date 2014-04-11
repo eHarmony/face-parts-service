@@ -48,7 +48,7 @@ void HttpRequest::readHeader(QTcpSocket& socket) {
     int colon=newData.indexOf(':');
     if (colon>0)  {
         // Received a line with a colon - a header
-        currentHeader=newData.left(colon);
+        currentHeader=newData.left(colon).toLower();
         QByteArray value=newData.mid(colon+1).trimmed();
         headers.insert(currentHeader,value);
 #ifdef SUPERVERBOSE
@@ -72,14 +72,14 @@ void HttpRequest::readHeader(QTcpSocket& socket) {
 #endif
         // Empty line received, that means all headers have been received
         // Check for multipart/form-data
-        QByteArray contentType=headers.value("Content-Type");
+        QByteArray contentType=headers.value("content-type");
         if (contentType.startsWith("multipart/form-data")) {
             int posi=contentType.indexOf("boundary=");
             if (posi>=0) {
                 boundary=contentType.mid(posi+9);
             }
         }
-        QByteArray contentLength=getHeader("Content-Length");
+        QByteArray contentLength=getHeader("content-length");
         if (!contentLength.isEmpty()) {
             expectedBodySize=contentLength.toInt();
         }
@@ -149,7 +149,6 @@ void HttpRequest::readBody(QTcpSocket& socket) {
                 qCritical("HttpRequest: Error writing temp file for multipart body");
             }
             parseMultiPartFile();
-            QString a = tempFile.fileName();
             tempFile.close();
             status=complete;
         }
@@ -168,7 +167,7 @@ void HttpRequest::decodeRequestParams() {
         path=path.left(questionMark);
     }
     // Get request body parameters
-    QByteArray contentType=headers.value("Content-Type");
+    QByteArray contentType=headers.value("content-type");
     if (!bodyData.isEmpty() && (contentType.isEmpty() || contentType.startsWith("application/x-www-form-urlencoded"))) {
         if (!rawParameters.isEmpty()) {
             rawParameters.append('&');
@@ -198,7 +197,7 @@ void HttpRequest::extractCookies() {
 #ifdef SUPERVERBOSE
     qDebug("HttpRequest: extract cookies");
 #endif
-    foreach(QByteArray cookieStr, headers.values("Cookie")) {
+    foreach(QByteArray cookieStr, headers.values("cookie")) {
         QList<QByteArray> list=HttpCookie::splitCSV(cookieStr);
         foreach(QByteArray part, list) {
 #ifdef SUPERVERBOSE
