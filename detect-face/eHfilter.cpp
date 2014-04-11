@@ -8,7 +8,7 @@
 #include "eHfilter.h"
 #include <assert.h>
 #include <vector>
-#include <tbb/parallel_for.h>
+#include <parallel_for.h>
 
 using std::vector;
 
