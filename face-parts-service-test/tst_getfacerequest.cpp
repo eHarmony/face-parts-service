@@ -16,7 +16,7 @@ void GetFaceRequestTest::cleanupTestCase() {
     delete faceRequest;
 }
 
-void GetFaceRequestTest::badFile()
+void GetFaceRequestTest::noFile()
 {
     QSettings settings;
     HttpRequest request(&settings);
@@ -25,6 +25,16 @@ void GetFaceRequestTest::badFile()
     faceRequest->service(request, response);
 
     QCOMPARE(500, response.getStatus());
+}
+
+void GetFaceRequestTest::badFile() {
+    QFile file(testResources + "/1.json");
+    bool error;
+    QJsonDocument doc = faceRequest->getJSONFaces(&file, error);
+    file.close();
+
+    QVERIFY(error);
+    QCOMPARE(QJsonDocument(), doc);
 }
 
 void GetFaceRequestTest::goodFace() {
@@ -41,18 +51,23 @@ void GetFaceRequestTest::faceFromPose() {
 
 void GetFaceRequestTest::noFace() {
     QFile file(testResources + "/48170621_4.jpg");
-    QJsonDocument doc = faceRequest->getJSONFaces(&file);
+    bool error;
+    QJsonDocument doc = faceRequest->getJSONFaces(&file, error);
+    file.close();
     QJsonArray array;
     QJsonDocument emptyDoc(array);
 
+    QVERIFY(!error);
     QCOMPARE(emptyDoc, doc);
 }
 
 void GetFaceRequestTest::testFaces(const QString& fileName) {
     QString base = testResources + "/" + fileName;
     QFile file(base + ".jpg");
-    QJsonDocument current = faceRequest->getJSONFaces(&file);
+    bool error;
+    QJsonDocument current = faceRequest->getJSONFaces(&file, error);
     file.close();
+    QVERIFY(!error);
 
     QFile jsonFile(base + ".json");
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);

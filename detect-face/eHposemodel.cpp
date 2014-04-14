@@ -305,7 +305,7 @@ vector<bbox_t> posemodel_detect(const posemodel_t* model, const image_t* img, do
 			int level = rlevel-model->parts[k].scale*model->interval;
 			int numtypes = model->parts[k].num;
 			if(resp[level]==NULL) {
-                resp[level] = filterv_apply_ST(model->filters, pyra->feat[level], 0, model->filters.size()-1);
+                resp[level] = filterv_apply(model->filters, pyra->feat[level], 0, model->filters.size()-1);
 			}
 			/*assume all filters are of the same size*/
 			int len = (resp[level]->sizy)*(resp[level]->sizx);

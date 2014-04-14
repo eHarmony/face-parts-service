@@ -15,7 +15,7 @@ public:
     explicit GetFaceRequest(facemodel_t* faceModel, posemodel_t* poseModel, QObject *parent = 0);
     virtual ~GetFaceRequest();
     void service(HttpRequest &request, HttpResponse &response);
-    QJsonDocument getJSONFaces(QFile *file);
+    QJsonDocument getJSONFaces(QFile *file, bool& error);
 
 private:
     facemodel_t* faceModel;
