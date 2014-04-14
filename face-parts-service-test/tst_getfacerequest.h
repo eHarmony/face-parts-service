@@ -13,8 +13,10 @@ class GetFaceRequestTest : public QObject
 
 private:
     GetFaceRequest *faceRequest;
-    void testFaces(const QString& filename);
+
+    void testFaces(const QString& fileName);
     void compareDoubles(double actual, double expected, double delta);
+    void printSVG(const QString& fileName);
     QString testResources;
 
 private Q_SLOTS:

@@ -59,18 +59,73 @@ QJsonDocument GetFaceRequest::getJSONFaces(QFile *file, bool& error) {
         face["x2"] = faceBox.outer.x2;
         face["y2"] = faceBox.outer.y2;
         faceParts["face"] = face;
-        QJsonArray parts;
-        for (std::vector<fbox_t>::const_iterator fboxIter = faceBox.boxes.begin(); fboxIter != faceBox.boxes.end(); ++ fboxIter) {
-            fbox_t box = (*fboxIter);
-            QJsonObject part;
-            part["x"] = (box.x1 + box.x2)/2.0;
-            part["y"] = (box.y1 + box.y2)/2.0;
-            parts.append(part);
-        }
-        faceParts["parts"] = parts;
         faceParts["pose"] = faceBox.pose;
+
+        QJsonObject parts;
+        switch (faceBox.boxes.size()) {
+        case 39:
+            parts = getProfileParts(faceBox);
+            break;
+        case 68:
+            parts = getFrontalParts(faceBox);
+            break;
+        default:
+            parts = getUnknownParts(faceBox);
+        }
+
+        faceParts["parts"] = parts;
         faces.append(faceParts);
     }
     QJsonDocument doc(faces);
     return doc;
+}
+
+QJsonObject GetFaceRequest::getProfileParts(const bbox_t &faceBox) {
+    QJsonObject parts;
+    parts["nose bottom to top"] = extractParts(faceBox, 0, 6);
+    parts["eye bottom to top"] = extractParts(faceBox, 6, 11);
+    parts["eyebrow nose to ear"] = extractParts(faceBox, 11, 15);
+    parts["mouth"] = extractParts(faceBox, 15, 28);
+    parts["jaw bottom to top"] = extractParts(faceBox, 28, 39);
+    return parts;
+}
+
+QJsonObject GetFaceRequest::getFrontalParts(const bbox_t &faceBox) {
+    QJsonObject parts;
+    parts["nostrils right to left"] = extractParts(faceBox, 0, 5);
+    parts["nose bottom to top"] = extractParts(faceBox, 5, 9);
+    parts["right eye left to right"] = extractParts(faceBox, 9, 15);
+    parts["right eyebrow right to left"] = extractParts(faceBox, 15, 20);
+    parts["left eye right to left"] = extractParts(faceBox, 20, 26);
+    parts["left eyebrow left to right"] = extractParts(faceBox, 26, 31);
+    parts["upper lip right to left"] = extractParts(faceBox, 31, 41);
+    parts["lower lip left to right"] = extractParts(faceBox, 41, 51);
+    parts["right jaw bottom to top"] = extractParts(faceBox, 51, 60);
+    parts["left jaw bottom to top"] = extractParts(faceBox, 60, 68);
+    return parts;
+}
+
+QJsonObject GetFaceRequest::getUnknownParts(const bbox_t &faceBox) {
+    QJsonObject parts;
+    for (size_t i=0; i<faceBox.boxes.size(); ++i) {
+        parts[QString::number(i)] = extractPart(faceBox, i);
+    }
+    return parts;
+}
+
+QJsonArray GetFaceRequest::extractParts(const bbox_t &faceBox, const size_t start, const size_t end) {
+    QJsonArray parts;
+    for (size_t i=start; i<end; ++i) {
+        parts.append(extractPart(faceBox, i));
+    }
+    return parts;
+}
+
+QJsonObject GetFaceRequest::extractPart(const bbox_t &faceBox, const size_t i) {
+    fbox_t box = faceBox.boxes[i];
+    QJsonObject part;
+    part["x"] = (box.x1 + box.x2)/2.0;
+    part["y"] = (box.y1 + box.y2)/2.0;
+    part["num"] = (int)i;
+    return part;
 }

@@ -92,16 +92,24 @@ void GetFaceRequestTest::testFaces(const QString& fileName) {
 
         QCOMPARE(cFaceParts["pose"], eFaceParts["pose"]);
 
-        QJsonArray cParts = cFaceParts["parts"].toArray();
-        QJsonArray eParts = eFaceParts["parts"].toArray();
+        QJsonObject cParts = cFaceParts["parts"].toObject();
+        QJsonObject eParts = eFaceParts["parts"].toObject();
 
         QCOMPARE(cParts.size(), eParts.size());
 
-        for (int j=0; j<cParts.size(); ++j) {
-            QJsonObject cPart = cParts[i].toObject();
-            QJsonObject ePart = eParts[i].toObject();
-            compareDoubles(cPart["x"].toDouble(), ePart["x"].toDouble(), 0.0001);
-            compareDoubles(cPart["y"].toDouble(), ePart["y"].toDouble(), 0.0001);
+        for (QJsonObject::const_iterator cIter = cParts.constBegin(); cIter != cParts.constEnd(); ++cIter) {
+            QJsonArray cSubpart = cIter.value().toArray();
+            QJsonArray eSubpart = cParts[cIter.key()].toArray();
+
+            QCOMPARE(cSubpart.size(), eSubpart.size());
+
+            for (int i=0; i<cSubpart.size(); ++i) {
+                QJsonObject cPart = cSubpart[i].toObject();
+                QJsonObject ePart = eSubpart[i].toObject();
+                compareDoubles(cPart["x"].toDouble(), ePart["x"].toDouble(), 0.0001);
+                compareDoubles(cPart["y"].toDouble(), ePart["y"].toDouble(), 0.0001);
+                QCOMPARE(cPart["num"], ePart["num"]);
+            }
         }
     }
 }

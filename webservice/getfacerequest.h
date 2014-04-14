@@ -20,6 +20,12 @@ public:
 private:
     facemodel_t* faceModel;
     posemodel_t* poseModel;
+
+    QJsonObject getProfileParts(const bbox_t& faceBox);
+    QJsonObject getFrontalParts(const bbox_t& faceBox);
+    QJsonObject getUnknownParts(const bbox_t& faceBox);
+    QJsonObject extractPart(const bbox_t &faceBox, const size_t i);
+    QJsonArray extractParts(const bbox_t &faceBox, const size_t start, const size_t end);
 };
 
 #endif // GETFACEREQUEST_H
