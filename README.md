@@ -1,12 +1,14 @@
 # Mac Installation Instructions
 1.  Install XCode developer tools (not sure about this one)
-2.  Install MacPorts from https://www.macports.org/install.php
-3.  sudo port install atlas +nofortran (might take a while)
-4.  Download and install Qt 5.2.1 from http://qt-project.org/downloads
+2.  brew install tbb
+3.  Install MacPorts from https://www.macports.org/install.php
+4.  sudo port install atlas +nofortran (might take a while)
+5.  Download and install Qt 5.2.1 from http://qt-project.org/downloads
 
 # Linux Installation Instructions
 1.  sudo yum install atlas-devel.x86_64
-2.  sudo yum install qt5
+2.  sudo yum install tbb-devel
+3.  sudo yum install qt5
 
 # Make Instructions
 1.  Locate qmake (or add it to your path)
