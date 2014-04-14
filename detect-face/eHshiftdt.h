@@ -17,9 +17,9 @@
 void eHshiftdt(double* M, int* Ix, int* Iy, 
 		int lenx, int leny, int offx, int offy, int dstep, 
 		const double* vals, int sizx, int sizy, 
-		const double* w);
+        const double* w, bool multiThreaded = true);
 
 /* wrapper for default setting */
 void eHshiftdt(double* M, int* Ix, int* Iy, 
 		const double* vals, int sizx, int sizy, 
-		const double* w);
+        const double* w, bool multiThreaded = true);
