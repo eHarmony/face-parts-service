@@ -381,28 +381,28 @@ vector<bbox_t> facemodel_detect(const facemodel_t* model, const image_t* img, do
 			timeval start_dp, end_dp, interval_dp;
 			gettimeofday(&start_dp,NULL);
 #endif
-			/* part relations - tree message passing */
-			for(k=numparts-1;k>0;k--){
-				const facepart_t* child = &(parts->at(k));
-				facepart_data* child_data = &(parts_data.at(k));
-				int par = child->parent;
-				int Ny = parts_data.at(par).sizScore[0];
-				int Nx = parts_data.at(par).sizScore[1];
-				/* assume all filters are of the same size */
-				assert(Ny == child_data->sizScore[0] && Nx == child_data->sizScore[1]);
-				double* msg = new double[Nx*Ny];
-				child_data->Iy = new int[Ny*Nx];
-				child_data->Ix = new int[Ny*Nx];
-				eHshiftdt(msg,child_data->Ix,child_data->Iy,Nx,Ny,
-					child->startx,child->starty,
-					child->step,child_data->score,
-					child_data->sizScore[1],child_data->sizScore[0],
-					model->defs[child->defid].w
-					);
-				for(int i=0;i<Ny*Nx;i++)
-					parts_data.at(par).score[i]+=msg[i];
-				delete[] msg;
-			}
+            /* part relations - tree message passing */
+            for(k=numparts-1;k>0;k--){
+                const facepart_t* child = &(parts->at(k));
+                facepart_data* child_data = &(parts_data.at(k));
+                int par = child->parent;
+                int Ny = parts_data.at(par).sizScore[0];
+                int Nx = parts_data.at(par).sizScore[1];
+                /* assume all filters are of the same size */
+                assert(Ny == child_data->sizScore[0] && Nx == child_data->sizScore[1]);
+                double* msg = new double[Nx*Ny];
+                child_data->Iy = new int[Ny*Nx];
+                child_data->Ix = new int[Ny*Nx];
+                eHshiftdt(msg,child_data->Ix,child_data->Iy,Nx,Ny,
+                    child->startx,child->starty,
+                    child->step,child_data->score,
+                    child_data->sizScore[1],child_data->sizScore[0],
+                    model->defs[child->defid].w
+                    );
+                for(int i=0;i<Ny*Nx;i++)
+                    parts_data.at(par).score[i]+=msg[i];
+                delete[] msg;
+            }
 			
 			/* add bias to root score (const term) */
 			vector<int> slct; slct.reserve(10000);

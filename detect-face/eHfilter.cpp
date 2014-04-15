@@ -1,4 +1,4 @@
-/*
+﻿/*
  * eHfilter.cpp
  *
  *
@@ -60,6 +60,8 @@ class convolve {
     thread_data* const thread_data_array;
 
 public:
+    convolve(thread_data* thread_data) : thread_data_array(thread_data) {}
+
     void operator()(const tbb::blocked_range<size_t>& range) const {
         for (size_t i=range.begin(); i!=range.end(); ++i) {
             run(i);
@@ -87,8 +89,6 @@ public:
             }
         }
     }
-
-    convolve(thread_data* thread_data) : thread_data_array(thread_data) {}
 };
 
 /*

@@ -66,7 +66,6 @@ public:
         double* zBegin = z;
 
         /*
-         * k - index of rightmost parabola
          * v - locations of parabolas
          * z - locations of boundaries between parabolas
          * q - running index
