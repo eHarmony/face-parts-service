@@ -91,6 +91,7 @@ void GetFaceRequestTest::testFaces(const QString& fileName) {
         compareDoubles(cFace["y2"].toDouble(), eFace["y2"].toDouble(), 0.0001);
 
         QCOMPARE(cFaceParts["pose"], eFaceParts["pose"]);
+        QCOMPARE(cFaceParts["model"], eFaceParts["model"]);
 
         QJsonObject cParts = cFaceParts["parts"].toObject();
         QJsonObject eParts = eFaceParts["parts"].toObject();

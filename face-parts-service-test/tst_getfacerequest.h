@@ -23,12 +23,12 @@ private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
-    void badFile();
-    void noFile();
-    void noFace();
     void goodFace();
     void profile();
     void faceFromPose();
+    void badFile();
+    void noFile();
+    void noFace();
 };
 
 DECLARE_TEST(GetFaceRequestTest)

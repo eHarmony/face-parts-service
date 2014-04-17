@@ -65,12 +65,15 @@ QJsonDocument GetFaceRequest::getJSONFaces(QFile *file, bool& error) {
         switch (faceBox.boxes.size()) {
         case 39:
             parts = getProfileParts(faceBox);
+            faceParts["model"] = QString("profile");
             break;
         case 68:
             parts = getFrontalParts(faceBox);
+            faceParts["model"] = QString("frontal");
             break;
         default:
             parts = getUnknownParts(faceBox);
+            faceParts["model"] = QString("unknown");
         }
 
         faceParts["parts"] = parts;

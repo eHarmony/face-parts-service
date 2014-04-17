@@ -7,8 +7,9 @@
 
 # Linux Installation Instructions
 1.  sudo yum install atlas-devel.x86_64
-2.  sudo yum install tbb-devel
-3.  sudo yum install qt5
+2.  sudo yum install libjpeg-devel
+3.  sudo yum install tbb-devel
+4.  sudo yum install qt5
 
 # Make Instructions
 1.  Locate qmake (or add it to your path)

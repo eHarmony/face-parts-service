@@ -63,13 +63,13 @@ int main(int argc, char** argv) {
     fflush(stdout);
     exit(0);*/
 
-    FileLogger* logger = new FileLogger(&settings);
-    WebLogger::setFileLogger(logger);
+    FileLogger logger(&settings);
+    WebLogger::setFileLogger(&logger);
 
-    PathDelegator* pathDelegator = new PathDelegator();
-    pathDelegator->addPath("/face-parts", new GetFaceRequest(faceModel, poseModel));
+    PathDelegator pathDelegator;
+    pathDelegator.addPath("/face-parts", new GetFaceRequest(faceModel, poseModel));
 
-    new HttpListener(&settings, pathDelegator, &app);
+    new HttpListener(&settings, &pathDelegator, &app);
 
     return app.exec();
 }
