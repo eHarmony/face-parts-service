@@ -44,7 +44,7 @@ macx {
 }
 
 unix:!macx {
-    INCLUDEPATH += /usr/include
+    INCLUDEPATH += /usr/include /usr/include/tbb
     LIBS += -L/usr/lib64/atlas/ -L/usr/lib64
 }
 
