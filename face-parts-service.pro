@@ -17,7 +17,3 @@ TEMPLATE = app
 include(face-parts-service.pri)
 
 SOURCES += main.cpp
-
-# Mac Requirements
-# sudo port install atlas +nofortran
-# http://stefanfrings.de/qtwebapp/index-en.html

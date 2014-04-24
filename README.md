@@ -25,3 +25,5 @@
 4.  make
 5.  ./face-parts-service-test resources=path/to/src/resources testResources=path/to/src/face-parts-service-test/resources
 6.  Verify that all tests have passed
+
+This makes use of a modified version of QtWebApp, found at http://stefanfrings.de/qtwebapp/index-en.html
