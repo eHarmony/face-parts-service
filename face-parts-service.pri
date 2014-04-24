@@ -20,7 +20,8 @@ HEADERS += \
     $$PWD/detect-face/eHutils.h \
     $$PWD/webservice/pathdelegator.h \
     $$PWD/webservice/getfaceresource.h \
-    $$PWD/weblogger.h
+    $$PWD/weblogger.h \
+    $$PWD/webservice/ecvresource.h
 
 SOURCES += \
     $$PWD/detect-face/eHbbox.cpp \
@@ -36,7 +37,8 @@ SOURCES += \
     $$PWD/detect-face/eHutils.cpp \
     $$PWD/webservice/pathdelegator.cpp \
     $$PWD/webservice/getfaceresource.cpp \
-    $$PWD/weblogger.cpp
+    $$PWD/weblogger.cpp \
+    $$PWD/webservice/ecvresource.cpp
 
 macx {
     INCLUDEPATH += /usr/local/include /opt/local/include /usr/local/include/tbb/

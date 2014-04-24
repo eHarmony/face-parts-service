@@ -4,6 +4,7 @@
 #include <filelogger.h>
 #include <webservice/pathdelegator.h>
 #include <webservice/getfaceresource.h>
+#include <webservice/ecvresource.h>
 #include <weblogger.h>
 
 void printSVG(const QString &fileName, facemodel_t* faceModel, posemodel_t* poseModel) {
@@ -65,8 +66,13 @@ int main(int argc, char** argv) {
     FileLogger logger(&settings);
     WebLogger::setFileLogger(&logger);
 
+    QFile *ecvFile = NULL;
+    if (settings.contains("ecv_file")) {
+        ecvFile = new QFile(settings.value("ecv_file").toString());
+    }
     PathDelegator pathDelegator;
     pathDelegator.addPath("/face-parts/generate", new GetFaceResource(faceModel, poseModel));
+    pathDelegator.addPath("/face-parts/ecv", new ECVResource(ecvFile));
 
     new HttpListener(&settings, &pathDelegator, &app);
 
