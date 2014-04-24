@@ -1,12 +1,14 @@
 #include "ecvresource.h"
 
-ECVResource::ECVResource( QFile* ecvFile, QObject *parent) :
+ECVResource::ECVResource(QFile* ecvFile, QObject *parent) :
     HttpRequestHandler(parent) {
     this->ecvFile = ecvFile;
 }
 
 ECVResource::~ECVResource() {
-
+    if (ecvFile != NULL) {
+        delete ecvFile;
+    }
 }
 
 void ECVResource::service(HttpRequest &request, HttpResponse &response) {
