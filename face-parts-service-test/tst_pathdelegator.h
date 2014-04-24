@@ -5,7 +5,7 @@
 #include <autotest.h>
 
 class PathDelegator;
-class GetFaceRequest;
+class GetFaceResource;
 
 class PathDelegatorTest : public QObject
 {
@@ -13,7 +13,7 @@ class PathDelegatorTest : public QObject
 
 private:
     PathDelegator* pathDelegator;
-    GetFaceRequest* faceRequest;
+    GetFaceResource* faceResource;
 
 private Q_SLOTS:
     void initTestCase();

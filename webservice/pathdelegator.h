@@ -6,9 +6,6 @@
 #include <QByteArray>
 #include <httprequesthandler.h>
 
-class HttpRequest;
-class HttpResponse;
-
 class PathDelegator : public HttpRequestHandler
 {
     Q_OBJECT

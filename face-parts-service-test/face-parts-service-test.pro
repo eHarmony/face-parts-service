@@ -16,12 +16,13 @@ TEMPLATE = app
 
 include(../face-parts-service.pri)
 
-SOURCES += tst_getfacerequest.cpp tst_pathdelegator.cpp \
-    main.cpp
+SOURCES += tst_pathdelegator.cpp \
+    main.cpp \
+    tst_getfaceresource.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
-    tst_getfacerequest.h \
     tst_pathdelegator.h \
-    autotest.h
+    autotest.h \
+    tst_getfaceresource.h

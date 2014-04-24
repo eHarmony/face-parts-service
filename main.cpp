@@ -3,7 +3,7 @@
 #include <httplistener.h>
 #include <filelogger.h>
 #include <webservice/pathdelegator.h>
-#include <webservice/getfacerequest.h>
+#include <webservice/getfaceresource.h>
 #include <weblogger.h>
 
 void printSVG(const QString &fileName, facemodel_t* faceModel, posemodel_t* poseModel) {
@@ -50,7 +50,6 @@ void printSVG(const QString &fileName, facemodel_t* faceModel, posemodel_t* pose
       printf("</svg>\n");
 }
 
-
 int main(int argc, char** argv) {
     QCoreApplication app(argc,argv);
 
@@ -67,7 +66,7 @@ int main(int argc, char** argv) {
     WebLogger::setFileLogger(&logger);
 
     PathDelegator pathDelegator;
-    pathDelegator.addPath("/face-parts", new GetFaceRequest(faceModel, poseModel));
+    pathDelegator.addPath("/face-parts/generate", new GetFaceResource(faceModel, poseModel));
 
     new HttpListener(&settings, &pathDelegator, &app);
 

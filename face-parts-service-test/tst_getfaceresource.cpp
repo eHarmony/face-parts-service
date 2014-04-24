@@ -1,58 +1,58 @@
-#include "tst_getfacerequest.h"
+#include "tst_getfaceresource.h"
 #include <QString>
 #include <QtTest>
-#include <webservice/getfacerequest.h>
+#include <webservice/getfaceresource.h>
 
-void GetFaceRequestTest::initTestCase() {
+void GetFaceResourceTest::initTestCase() {
     QString modelResources = property("resources").toString();
     testResources = property("testResources").toString();
 
     facemodel_t* faceModel = facemodel_readFromFile(QString(modelResources + "/face_p146.xml").toStdString().c_str());
     posemodel_t* poseModel = posemodel_readFromFile(QString(modelResources + "/pose_BUFFY.xml").toStdString().c_str());
-    faceRequest = new GetFaceRequest(faceModel, poseModel);
+    faceResource = new GetFaceResource(faceModel, poseModel);
 }
 
-void GetFaceRequestTest::cleanupTestCase() {
-    delete faceRequest;
+void GetFaceResourceTest::cleanupTestCase() {
+    delete faceResource;
 }
 
-void GetFaceRequestTest::noFile()
+void GetFaceResourceTest::noFile()
 {
     QSettings settings;
     HttpRequest request(&settings);
     HttpResponse response(NULL);
 
-    faceRequest->service(request, response);
+    faceResource->service(request, response);
 
     QCOMPARE(500, response.getStatus());
 }
 
-void GetFaceRequestTest::badFile() {
+void GetFaceResourceTest::badFile() {
     QFile file(testResources + "/1.json");
     bool error;
-    QJsonDocument doc = faceRequest->getJSONFaces(&file, error);
+    QJsonDocument doc = faceResource->getJSONFaces(&file, error);
     file.close();
 
     QVERIFY(error);
     QCOMPARE(QJsonDocument(), doc);
 }
 
-void GetFaceRequestTest::goodFace() {
+void GetFaceResourceTest::goodFace() {
     testFaces("1");
 }
 
-void GetFaceRequestTest::profile() {
+void GetFaceResourceTest::profile() {
     testFaces("profile");
 }
 
-void GetFaceRequestTest::faceFromPose() {
+void GetFaceResourceTest::faceFromPose() {
     testFaces("10156670_4");
 }
 
-void GetFaceRequestTest::noFace() {
+void GetFaceResourceTest::noFace() {
     QFile file(testResources + "/48170621_4.jpg");
     bool error;
-    QJsonDocument doc = faceRequest->getJSONFaces(&file, error);
+    QJsonDocument doc = faceResource->getJSONFaces(&file, error);
     file.close();
     QJsonArray array;
     QJsonDocument emptyDoc(array);
@@ -61,11 +61,11 @@ void GetFaceRequestTest::noFace() {
     QCOMPARE(emptyDoc, doc);
 }
 
-void GetFaceRequestTest::testFaces(const QString& fileName) {
+void GetFaceResourceTest::testFaces(const QString& fileName) {
     QString base = testResources + "/" + fileName;
     QFile file(base + ".jpg");
     bool error;
-    QJsonDocument current = faceRequest->getJSONFaces(&file, error);
+    QJsonDocument current = faceResource->getJSONFaces(&file, error);
     file.close();
     QVERIFY(!error);
 
@@ -115,6 +115,6 @@ void GetFaceRequestTest::testFaces(const QString& fileName) {
     }
 }
 
-void GetFaceRequestTest::compareDoubles(double actual, double expected, double delta) {
+void GetFaceResourceTest::compareDoubles(double actual, double expected, double delta) {
     QVERIFY(actual-delta < expected && actual+delta > expected);
 }

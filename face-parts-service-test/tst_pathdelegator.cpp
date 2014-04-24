@@ -3,13 +3,13 @@
 #include <QtTest/QTest>
 #include <QJsonDocument>
 #include <webservice/pathdelegator.h>
-#include <webservice/getfacerequest.h>
+#include <webservice/getfaceresource.h>
 
 void PathDelegatorTest::initTestCase() {
     pathDelegator = new PathDelegator();
-    faceRequest = new GetFaceRequest(NULL, NULL);
+    faceResource = new GetFaceResource(NULL, NULL);
 
-    pathDelegator->addPath("/face-parts", faceRequest);
+    pathDelegator->addPath("/face-parts/generate", faceResource);
 }
 
 void PathDelegatorTest::cleanupTestCase() {
@@ -32,7 +32,7 @@ void PathDelegatorTest::goodPath() {
     HttpRequest request(&settings);
     HttpResponse response(NULL);
 
-    request.setPath("/face-parts");
+    request.setPath("/face-parts/generate");
     pathDelegator->service(request, response);
 
     QCOMPARE(500, response.getStatus());

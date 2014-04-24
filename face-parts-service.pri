@@ -19,7 +19,7 @@ HEADERS += \
     $$PWD/detect-face/eHshiftdt.h \
     $$PWD/detect-face/eHutils.h \
     $$PWD/webservice/pathdelegator.h \
-    $$PWD/webservice/getfacerequest.h \
+    $$PWD/webservice/getfaceresource.h \
     $$PWD/weblogger.h
 
 SOURCES += \
@@ -35,7 +35,7 @@ SOURCES += \
     $$PWD/detect-face/eHshiftdt.cpp \
     $$PWD/detect-face/eHutils.cpp \
     $$PWD/webservice/pathdelegator.cpp \
-    $$PWD/webservice/getfacerequest.cpp \
+    $$PWD/webservice/getfaceresource.cpp \
     $$PWD/weblogger.cpp
 
 macx {

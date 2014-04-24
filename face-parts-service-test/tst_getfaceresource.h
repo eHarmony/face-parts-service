@@ -1,18 +1,18 @@
-#ifndef TST_GETFACEREQUEST_H
-#define TST_GETFACEREQUEST_H
+#ifndef TST_GETFACERESOURCE_H
+#define TST_GETFACERESOURCE_H
 
 #include <QObject>
 #include <QJsonDocument>
 #include <autotest.h>
 
-class GetFaceRequest;
+class GetFaceResource;
 
-class GetFaceRequestTest : public QObject
+class GetFaceResourceTest : public QObject
 {
     Q_OBJECT
 
 private:
-    GetFaceRequest *faceRequest;
+    GetFaceResource *faceResource;
 
     void testFaces(const QString& fileName);
     void compareDoubles(double actual, double expected, double delta);
@@ -31,6 +31,6 @@ private Q_SLOTS:
     void noFace();
 };
 
-DECLARE_TEST(GetFaceRequestTest)
+DECLARE_TEST(GetFaceResourceTest)
 
-#endif // TST_GETFACEREQUEST_H
+#endif // TST_GETFACERESOURCE_H

@@ -1,17 +1,17 @@
-#include "getfacerequest.h"
+#include "getfaceresource.h"
 #include <QTemporaryFile>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <detect-face/eHimage.h>
 
-GetFaceRequest::GetFaceRequest(facemodel_t* faceModel, posemodel_t* poseModel, QObject *parent) :
+GetFaceResource::GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel, QObject *parent) :
     HttpRequestHandler(parent) {
     this->faceModel = faceModel;
     this->poseModel = poseModel;
 }
 
-GetFaceRequest::~GetFaceRequest() {
+GetFaceResource::~GetFaceResource() {
     if (faceModel) {
         delete faceModel;
     }
@@ -20,7 +20,7 @@ GetFaceRequest::~GetFaceRequest() {
     }
 }
 
-void GetFaceRequest::service(HttpRequest &request, HttpResponse &response) {
+void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
     QTemporaryFile* file = request.getUploadedFile("file");
     if (file) {
         bool error;
@@ -37,7 +37,7 @@ void GetFaceRequest::service(HttpRequest &request, HttpResponse &response) {
     }
 }
 
-QJsonDocument GetFaceRequest::getJSONFaces(QFile *file, bool& error) {
+QJsonDocument GetFaceResource::getJSONFaces(QFile *file, bool& error) {
     std::vector<bbox_t> faceBoxes;
     try {
         image_t* img = image_readJPG(file->fileName().toStdString().c_str());
@@ -83,7 +83,7 @@ QJsonDocument GetFaceRequest::getJSONFaces(QFile *file, bool& error) {
     return doc;
 }
 
-QJsonObject GetFaceRequest::getProfileParts(const bbox_t &faceBox) {
+QJsonObject GetFaceResource::getProfileParts(const bbox_t &faceBox) {
     QJsonObject parts;
     parts["nose bottom to top"] = extractParts(faceBox, 0, 6);
     parts["eye bottom to top"] = extractParts(faceBox, 6, 11);
@@ -93,7 +93,7 @@ QJsonObject GetFaceRequest::getProfileParts(const bbox_t &faceBox) {
     return parts;
 }
 
-QJsonObject GetFaceRequest::getFrontalParts(const bbox_t &faceBox) {
+QJsonObject GetFaceResource::getFrontalParts(const bbox_t &faceBox) {
     QJsonObject parts;
     parts["nostrils right to left"] = extractParts(faceBox, 0, 5);
     parts["nose bottom to top"] = extractParts(faceBox, 5, 9);
@@ -108,7 +108,7 @@ QJsonObject GetFaceRequest::getFrontalParts(const bbox_t &faceBox) {
     return parts;
 }
 
-QJsonObject GetFaceRequest::getUnknownParts(const bbox_t &faceBox) {
+QJsonObject GetFaceResource::getUnknownParts(const bbox_t &faceBox) {
     QJsonObject parts;
     for (size_t i=0; i<faceBox.boxes.size(); ++i) {
         parts[QString::number(i)] = extractPart(faceBox, i);
@@ -116,7 +116,7 @@ QJsonObject GetFaceRequest::getUnknownParts(const bbox_t &faceBox) {
     return parts;
 }
 
-QJsonArray GetFaceRequest::extractParts(const bbox_t &faceBox, const size_t start, const size_t end) {
+QJsonArray GetFaceResource::extractParts(const bbox_t &faceBox, const size_t start, const size_t end) {
     QJsonArray parts;
     for (size_t i=start; i<end; ++i) {
         parts.append(extractPart(faceBox, i));
@@ -124,7 +124,7 @@ QJsonArray GetFaceRequest::extractParts(const bbox_t &faceBox, const size_t star
     return parts;
 }
 
-QJsonObject GetFaceRequest::extractPart(const bbox_t &faceBox, const size_t i) {
+QJsonObject GetFaceResource::extractPart(const bbox_t &faceBox, const size_t i) {
     fbox_t box = faceBox.boxes[i];
     QJsonObject part;
     part["x"] = (box.x1 + box.x2)/2.0;
