@@ -20,7 +20,6 @@
                         <phase>compile</phase>
                         <configuration>
                             <target>
-                                <mkdir dir="target/classes" />
                                 <exec executable="qmake" dir="target/classes" failonerror="true">
                                     <arg value="../../src/main/c++/face-parts-service.pro" />
                                 </exec>
