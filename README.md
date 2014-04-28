@@ -1,29 +1,67 @@
-# Mac Installation Instructions
+# Executive Summary
+
+This is a RESTful API for segmenting human faces from an image.  The software is powered by [face parts](http://www.ics.uci.edu/~xzhu/face/).  The goal of this project is threefold:
+
+1.  Remove the dependency on Matlab
+2.  Make the code more usable by wrapping it in a RESTful API.  This makes use of a modified version of [QtWebApp](http://stefanfrings.de/qtwebapp/index-en.html)
+3.  Speed the code up by making use of [Threaded Building Blocks](https://www.threadingbuildingblocks.org/)
+
+# Mac Compile Instructions
+
 1.  Install XCode developer tools (not sure about this one)
 2.  brew install tbb
-3.  Install MacPorts from https://www.macports.org/install.php
+3.  Install MacPorts from [here](https://www.macports.org/install.php)
 4.  sudo port install atlas +nofortran (might take a while)
-5.  Download and install Qt 5.2.1 from http://qt-project.org/downloads
+5.  Download and install Qt 5.2.1 from [here](http://qt-project.org/downloads)
 
-# Linux Installation Instructions
+# Red Hat Compile Instructions (for running the code, don't install the devel versions, just use the regular versions)
+
 1.  sudo yum install atlas-devel.x86_64
 2.  sudo yum install libjpeg-devel
 3.  sudo yum install tbb-devel
-4.  sudo yum install qt5
+4.  sudo yum install qt5-base-devel
+
+We are using maven as a build architecture.  I have tested this using [maven version 3.0.5](http://maven.apache.org/download.cgi).
 
 # Make Instructions
-1.  Locate qmake (or add it to your path)
-2.  Create a build directory and cd into it
-3.  qmake path/to/src/face-parts-service.pro
-  1. For debug version run qmake CONFIG=debug path/to/src/face-parts-service.pro
-4.  make
 
-# Test Instructions
-1.  Locate qmake (or add it to your path)
-2.  Create a build directory and cd into it
-3.  qmake path/to/src/face-parts-service-test/face-parts-service-test.pro
-4.  make
-5.  ./face-parts-service-test resources=path/to/src/resources testResources=path/to/src/face-parts-service-test/resources
-6.  Verify that all tests have passed
+1.  Add qmake to your path
+2.  mvn install
 
-This makes use of a modified version of QtWebApp, found at http://stefanfrings.de/qtwebapp/index-en.html
+# Running the Server
+
+In order to start the webserver run `target/classes/face-parts-service src/main/resources/configfile.ini`.  At this point, the server is ready to segment images.  In order to submit an image, create a multipart form and upload a JPEG (right now the server only works with JPEGs) to http://localhost:8084/face-parts/generate
+
+If the request was successful, a 200 response will be returned along with some JSON described here, where the outer array is a list of all the faces found:
+
+    [
+        "face": {
+            "x1": <upper left x coordinate of face box>,
+            "y1": <upper left y coordinate of face box>,
+            "x2": <lower right x coordinate of face box>,
+            "y2": <lower right x coordinate of face box>
+        },
+        "pose": <angle the person is facing from -90 to 90 degrees>,
+        "model": <frontal or profile depending on which model was used to find the face>,
+        "parts":  {
+            <descriptive name of face region>: [
+                {
+                    "x": <x coordinate of face part>,
+                    "y": <y coordinate of face part>,
+                    "num": <the part number in the model>
+                }
+            ]
+        }
+    ]
+
+
+# Configuration
+
+The webserver can be configured in a variety of ways.  An example configuration file is found at src/main/resources/configfile.ini.  It is very important that the lines
+
+
+    face_model=src/main/resources/face_p146.xml
+    pose_model=src/main/resources/pose_BUFFY.xml
+
+
+point to valid files, as these represent the models used for segmentation.  These paths are relative to the directory the program was started from.  
