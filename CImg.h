@@ -35730,15 +35730,13 @@ namespace cimg_library_suffixed {
 
     typedef struct _cimg_error_mgr *_cimg_error_ptr;
 
-    METHODDEF(void) _cimg_jpeg_error_longjmp(_cimg_error_ptr c_err) {
-      longjmp(c_err->setjmp_buffer,1);
-    }
-
     METHODDEF(void) _cimg_jpeg_error_exit(j_common_ptr cinfo) {
       _cimg_error_ptr c_err = (_cimg_error_ptr) cinfo->err;  // Return control to the setjmp point
       (*cinfo->err->format_message)(cinfo,c_err->message);
       jpeg_destroy(cinfo);  // Clean memory and temp files.
-      _cimg_jpeg_error_longjmp(c_err);
+      jmp_buf tmp_buf = c_err->setjmp_buffer;
+      longjmp(tmp_buf,1);
+      c_err->setjmp_buffer = tmp_buf;
     }
 #endif
 
