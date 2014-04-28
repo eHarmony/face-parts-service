@@ -55,14 +55,11 @@ If the request was successful, a 200 response will be returned along with some J
         }
     ]
 
-
 # Configuration
 
-The webserver can be configured in a variety of ways.  An example configuration file is found at src/main/resources/configfile.ini.  It is very important that the lines
-
+The webserver can be configured in a variety of ways.  An example configuration file is found at `src/main/resources/configfile.ini`.  It is very important that the lines
 
     face_model=src/main/resources/face_p146.xml
     pose_model=src/main/resources/pose_BUFFY.xml
-
 
 point to valid files, as these represent the models used for segmentation.  These paths are relative to the directory the program was started from.  
