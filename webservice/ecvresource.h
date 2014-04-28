@@ -15,6 +15,10 @@ private:
     QFile* ecvFile;
 
     bool isServerUp() const;
+    static const QByteArray SERVER_UP_TEXT;
+    static const QByteArray SERVER_DOWN_TEXT;
+    static const int SERVER_UP_STATUS;
+    static const int SERVER_DOWN_STATUS;
 
 };
 
