@@ -19,12 +19,12 @@
                         <id>qmake-main</id>
                         <phase>compile</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <mkdir dir="target/classes" />
                                 <exec executable="qmake" dir="target/classes" failonerror="true">
                                     <arg value="../../src/main/c++/face-parts-service.pro" />
                                 </exec>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                           <goal>run</goal>
@@ -34,9 +34,9 @@
                         <id>make-main</id>
                         <phase>compile</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <exec executable="make" dir="target/classes" failonerror="true"/>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                           <goal>run</goal>
@@ -46,11 +46,11 @@
                         <id>qmake-tests</id>
                         <phase>test</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <exec executable="qmake" dir="target/test-classes" failonerror="true">
                                     <arg value="../../src/test/c++/face-parts-service-test.pro" />
                                 </exec>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                           <goal>run</goal>
@@ -60,9 +60,9 @@
                         <id>make-tests</id>
                         <phase>test</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <exec executable="make" dir="target/test-classes" failonerror="true" />
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                           <goal>run</goal>
@@ -72,12 +72,12 @@
                         <id>run-tests</id>
                         <phase>test</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <exec executable="target/test-classes/face-parts-service-test" failonerror="true">
                                     <arg value="resources=src/main/resources" />
                                     <arg value="testResources=src/test/resources" />
                                 </exec>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                           <goal>run</goal>
