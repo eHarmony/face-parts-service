@@ -35734,9 +35734,7 @@ namespace cimg_library_suffixed {
       _cimg_error_ptr c_err = (_cimg_error_ptr) cinfo->err;  // Return control to the setjmp point
       (*cinfo->err->format_message)(cinfo,c_err->message);
       jpeg_destroy(cinfo);  // Clean memory and temp files.
-      jmp_buf tmp_buf = c_err->setjmp_buffer;
-      longjmp(tmp_buf,1);
-      c_err->setjmp_buffer = tmp_buf;
+      longjmp(c_err->setjmp_buffer,1);
     }
 #endif
 
