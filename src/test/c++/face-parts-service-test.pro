@@ -14,7 +14,7 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-include(../face-parts-service.pri)
+include(../../main/c++/face-parts-service.pri)
 
 SOURCES += tst_pathdelegator.cpp \
     main.cpp \

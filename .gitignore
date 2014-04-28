@@ -1,3 +1,5 @@
 *.pro.user
 *.autosave
 *.log
+
+target/

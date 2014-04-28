@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.eharmony.modeling</groupId>
+    <artifactId>face-parts-service</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>Face Parts Service</name>
+    <description>HTTP service for segmenting faces and getting fiducial markers</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>qmake-main</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="target/classes" />
+                                <exec executable="qmake" dir="target/classes" failonerror="true">
+                                    <arg value="../../src/main/c++/face-parts-service.pro" />
+                                </exec>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>make-main</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <exec executable="make" dir="target/classes" failonerror="true"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>qmake-tests</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <tasks>
+                                <exec executable="qmake" dir="target/test-classes" failonerror="true">
+                                    <arg value="../../src/test/c++/face-parts-service-test.pro" />
+                                </exec>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>make-tests</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <tasks>
+                                <exec executable="make" dir="target/test-classes" failonerror="true" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>run-tests</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <tasks>
+                                <exec executable="target/test-classes/face-parts-service-test" failonerror="true">
+                                    <arg value="resources=src/main/resources" />
+                                    <arg value="testResources=src/test/resources" />
+                                </exec>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>attach-binary</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>target/classes/face-parts-service</file>
+                                    <type>exe</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin-->
+        </plugins>
+    </build>
+
+</project>
