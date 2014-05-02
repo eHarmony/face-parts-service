@@ -23,7 +23,7 @@ GetFaceResource::~GetFaceResource() {
 void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
     QTemporaryFile* file = request.getUploadedFile("file");
     if (file) {
-        bool error = false;
+        bool error;
         QJsonDocument doc = getJSONFaces(file, error);
         if (error) {
             response.setStatus(500, "Internal processing error");
@@ -43,6 +43,7 @@ QJsonDocument GetFaceResource::getJSONFaces(QFile *file, bool& error) {
         image_t* img = image_readJPG(file->fileName().toStdString().c_str());
         faceBoxes = facemodel_detect(faceModel, poseModel, img);
         image_delete(img);
+        error = false;
     }
     catch (...) {
         error = true;

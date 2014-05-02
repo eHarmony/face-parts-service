@@ -29,7 +29,7 @@ void GetFaceResourceTest::noFile()
 
 void GetFaceResourceTest::badFile() {
     QFile file(testResources + "/1.json");
-    bool error = false;
+    bool error;
     QJsonDocument doc = faceResource->getJSONFaces(&file, error);
     file.close();
 
@@ -51,7 +51,7 @@ void GetFaceResourceTest::faceFromPose() {
 
 void GetFaceResourceTest::noFace() {
     QFile file(testResources + "/48170621_4.jpg");
-    bool error = false;
+    bool error;
     QJsonDocument doc = faceResource->getJSONFaces(&file, error);
     file.close();
     QJsonArray array;
@@ -64,7 +64,7 @@ void GetFaceResourceTest::noFace() {
 void GetFaceResourceTest::testFaces(const QString& fileName) {
     QString base = testResources + "/" + fileName;
     QFile file(base + ".jpg");
-    bool error = false;
+    bool error;
     QJsonDocument current = faceResource->getJSONFaces(&file, error);
     file.close();
     QVERIFY(!error);
