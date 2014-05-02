@@ -23,7 +23,7 @@ GetFaceResource::~GetFaceResource() {
 void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
     QTemporaryFile* file = request.getUploadedFile("file");
     if (file) {
-        bool error;
+        bool error = false;
         QJsonDocument doc = getJSONFaces(file, error);
         if (error) {
             response.setStatus(500, "Internal processing error");
