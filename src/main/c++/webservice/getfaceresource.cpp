@@ -26,7 +26,7 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
         bool error;
         QJsonDocument doc = getJSONFaces(file, error);
         if (error) {
-            response.setStatus(500, "Internal processing error");
+            response.setStatus(500, "Internal processing error, is the uploaded file a valid jpeg?");
         }
         else {
             response.write(doc.toJson(QJsonDocument::Compact));
