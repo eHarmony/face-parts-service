@@ -21,7 +21,8 @@ HEADERS += \
     $$PWD/webservice/pathdelegator.h \
     $$PWD/webservice/getfaceresource.h \
     $$PWD/weblogger.h \
-    $$PWD/webservice/ecvresource.h
+    $$PWD/webservice/ecvresource.h \
+    $$PWD/httpheaders.h
 
 SOURCES += \
     $$PWD/detect-face/eHbbox.cpp \
@@ -38,11 +39,12 @@ SOURCES += \
     $$PWD/webservice/pathdelegator.cpp \
     $$PWD/webservice/getfaceresource.cpp \
     $$PWD/weblogger.cpp \
-    $$PWD/webservice/ecvresource.cpp
+    $$PWD/webservice/ecvresource.cpp \
+    $$PWD/httpheaders.cpp
 
 macx {
-    INCLUDEPATH += /usr/local/include /opt/local/include /usr/local/include/tbb/
-    LIBS += -L/usr/local/lib
+    INCLUDEPATH += /usr/local/include /opt/local/include /usr/local/include/tbb/ /opt/X11/include
+    LIBS += -L/usr/local/lib -L/opt/X11/lib
 }
 
 unix:!macx {
@@ -50,4 +52,4 @@ unix:!macx {
     LIBS += -L/usr/lib64/atlas/ -L/usr/lib64
 }
 
-LIBS += -ljpeg -lcblas -ltbb
+LIBS += -ljpeg -lcblas -ltbb -lX11

@@ -14,6 +14,9 @@ PathDelegator::~PathDelegator() {
 
 void PathDelegator::service(HttpRequest &request, HttpResponse &response) {
     QByteArray path = request.getPath();
+    if (path.contains(".")) {
+        path = path.left(path.indexOf("."));
+    }
     if (paths.contains(path)) {
         paths[path]->service(request, response);
     }

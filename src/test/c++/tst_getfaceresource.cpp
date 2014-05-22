@@ -9,7 +9,8 @@ void GetFaceResourceTest::initTestCase() {
 
     facemodel_t* faceModel = facemodel_readFromFile(QString(modelResources + "/face_p146.xml").toStdString().c_str());
     posemodel_t* poseModel = posemodel_readFromFile(QString(modelResources + "/pose_BUFFY.xml").toStdString().c_str());
-    faceResource = new GetFaceResource(faceModel, poseModel);
+    QSettings settings;
+    faceResource = new GetFaceResource(faceModel, poseModel, settings);
 }
 
 void GetFaceResourceTest::cleanupTestCase() {
@@ -29,11 +30,11 @@ void GetFaceResourceTest::noFile()
 
 void GetFaceResourceTest::badFile() {
     QFile file(testResources + "/1.json");
-    bool error;
-    QJsonDocument doc = faceResource->getJSONFaces(&file, error);
+    QJsonDocument doc;
+    bool success = faceResource->getJSONFaces(&file, doc);
     file.close();
 
-    QVERIFY(error);
+    QVERIFY(!success);
     QCOMPARE(QJsonDocument(), doc);
 }
 
@@ -51,23 +52,23 @@ void GetFaceResourceTest::faceFromPose() {
 
 void GetFaceResourceTest::noFace() {
     QFile file(testResources + "/48170621_4.jpg");
-    bool error;
-    QJsonDocument doc = faceResource->getJSONFaces(&file, error);
+    QJsonDocument doc;
+    bool success = faceResource->getJSONFaces(&file, doc);
     file.close();
     QJsonArray array;
     QJsonDocument emptyDoc(array);
 
-    QVERIFY(!error);
+    QVERIFY(success);
     QCOMPARE(emptyDoc, doc);
 }
 
 void GetFaceResourceTest::testFaces(const QString& fileName) {
     QString base = testResources + "/" + fileName;
     QFile file(base + ".jpg");
-    bool error;
-    QJsonDocument current = faceResource->getJSONFaces(&file, error);
+    QJsonDocument current;
+    bool success = faceResource->getJSONFaces(&file, current);
     file.close();
-    QVERIFY(!error);
+    QVERIFY(success);
 
     QFile jsonFile(base + ".json");
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);

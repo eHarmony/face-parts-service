@@ -39580,6 +39580,27 @@ namespace cimg_library_suffixed {
       return _save_jpeg(file,0,quality);
     }
 
+    const CImg<T>& save_jpeg(unsigned char ** outbuffer, unsigned long * outsize, const unsigned int quality=100) const {
+      if (_depth>1)
+        cimg::warn(_cimg_instance
+                   "save_jpeg(): Instance is volumetric, only the first slice will be saved.",
+                   cimg_instance);
+
+#ifndef cimg_use_jpeg
+      if (!file) return save_other(filename,quality);
+      else throw CImgIOException(_cimg_instance
+                                 "save_jpeg(): Unable to save data in 'outbuffer' unless libjpeg is enabled.",
+                                 cimg_instance);
+#else
+      // Call libjpeg functions
+      struct jpeg_compress_struct cinfo;
+      jpeg_create_compress(&cinfo);
+      jpeg_mem_dest(&cinfo, outbuffer, outsize);
+      _save_jpeg(cinfo, quality);
+      return *this;
+#endif
+    }
+
     const CImg<T>& _save_jpeg(std::FILE *const file, const char *const filename, const unsigned int quality) const {
       if (!file && !filename)
         throw CImgArgumentException(_cimg_instance
@@ -39598,6 +39619,20 @@ namespace cimg_library_suffixed {
                                  "save_jpeg(): Unable to save data in '(*FILE)' unless libjpeg is enabled.",
                                  cimg_instance);
 #else
+
+      // Call libjpeg functions
+      struct jpeg_compress_struct cinfo;
+      std::FILE *const nfile = file?file:cimg::fopen(filename,"wb");
+      jpeg_create_compress(&cinfo);
+      jpeg_stdio_dest(&cinfo,nfile);
+      _save_jpeg(cinfo, quality);
+      if (!file) cimg::fclose(nfile);
+      return *this;
+#endif
+    }
+
+    void _save_jpeg(struct jpeg_compress_struct& cinfo, const unsigned int quality) const {
+#ifdef cimg_use_jpeg
       unsigned int dimbuf = 0;
       J_COLOR_SPACE colortype = JCS_RGB;
 
@@ -39609,12 +39644,8 @@ namespace cimg_library_suffixed {
       }
 
       // Call libjpeg functions
-      struct jpeg_compress_struct cinfo;
       struct jpeg_error_mgr jerr;
       cinfo.err = jpeg_std_error(&jerr);
-      jpeg_create_compress(&cinfo);
-      std::FILE *const nfile = file?file:cimg::fopen(filename,"wb");
-      jpeg_stdio_dest(&cinfo,nfile);
       cinfo.image_width = _width;
       cinfo.image_height = _height;
       cinfo.input_components = dimbuf;
@@ -39672,9 +39703,7 @@ namespace cimg_library_suffixed {
         jpeg_write_scanlines(&cinfo,row_pointer,1);
       }
       jpeg_finish_compress(&cinfo);
-      if (!file) cimg::fclose(nfile);
       jpeg_destroy_compress(&cinfo);
-      return *this;
 #endif
     }
 

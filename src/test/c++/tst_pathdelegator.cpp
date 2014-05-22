@@ -7,7 +7,8 @@
 
 void PathDelegatorTest::initTestCase() {
     pathDelegator = new PathDelegator();
-    faceResource = new GetFaceResource(NULL, NULL);
+    QSettings settings;
+    faceResource = new GetFaceResource(NULL, NULL, settings);
 
     pathDelegator->addPath("/face-parts/generate", faceResource);
 }

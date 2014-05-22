@@ -1,14 +1,33 @@
 #include "getfaceresource.h"
-#include <QTemporaryFile>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <detect-face/eHimage.h>
+#include <CImg.h>
+#include <httpheaders.h>
 
-GetFaceResource::GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel, QObject *parent) :
+GetFaceResource::GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel, const QSettings& settings, QObject *parent) :
     HttpRequestHandler(parent) {
     this->faceModel = faceModel;
     this->poseModel = poseModel;
+
+    QStringList faceColorStr = settings.value("faceColor", QStringList(QStringList() << "255" << "0" << "0")).toStringList();
+    QStringList foregroundTextColorStr = settings.value("foregroundTextColor", QStringList(QStringList() << "0" << "0" << "0")).toStringList();
+    QStringList pointColorStr = settings.value("pointColor", QStringList(QStringList() << "0" << "255" << "0")).toStringList();
+    poseTextSize = settings.value("poseTextSize", 20).toInt();
+    numberTextSize = settings.value("numberTextSize", 15).toInt();
+
+    faceColor = initArray(faceColorStr);
+    foregroundTextColor = initArray(foregroundTextColorStr);
+    pointColor = initArray(pointColorStr);
+}
+
+const unsigned char* GetFaceResource::initArray(const QStringList &values) {
+    unsigned char* array = new unsigned char[values.length()];
+    for (int i=0; i<values.length(); ++i) {
+        array[i] = values[i].toInt();
+    }
+    return array;
 }
 
 GetFaceResource::~GetFaceResource() {
@@ -18,18 +37,39 @@ GetFaceResource::~GetFaceResource() {
     if (poseModel) {
         delete poseModel;
     }
+    if (faceColor) {
+        delete[] faceColor;
+    }
+    if (foregroundTextColor) {
+        delete[] foregroundTextColor;
+    }
+    if (pointColor) {
+        delete[] pointColor;
+    }
 }
 
 void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
-    QTemporaryFile* file = request.getUploadedFile("file");
+    QFile* file = request.getUploadedFile("file");
     if (file) {
-        bool error;
-        QJsonDocument doc = getJSONFaces(file, error);
-        if (error) {
-            response.setStatus(500, "Internal processing error, is the uploaded file a valid jpeg?");
+        if (request.getPath().endsWith(".jpeg") || request.getPath().endsWith(".jpg")) {
+            QByteArray imageBytes;
+            if (drawFacesOnImage(file, imageBytes)) {
+                response.setHeader(HttpHeaders::CONTENT_TYPE, HttpHeaders::IMAGE_JPEG);
+                response.setHeader(HttpHeaders::CONTENT_LENGTH, imageBytes.size());
+                response.write(imageBytes);
+            }
+            else {
+                response.setStatus(500, "Internal processing error, is the uploaded file a valid jpeg?");
+            }
         }
         else {
-            response.write(doc.toJson(QJsonDocument::Compact));
+            QJsonDocument doc;
+            if (getJSONFaces(file, doc)) {
+                response.write(doc.toJson(QJsonDocument::Compact));
+            }
+            else {
+                response.setStatus(500, "Internal processing error, is the uploaded file a valid jpeg?");
+            }
         }
     }
     else {
@@ -37,17 +77,71 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
     }
 }
 
-QJsonDocument GetFaceResource::getJSONFaces(QFile *file, bool& error) {
+bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes) {
     std::vector<bbox_t> faceBoxes;
+
+    if (!getFaceBoxes(file, faceBoxes)) {
+        return false;
+    }
+
+    cimg_library::CImg<int> img;
+    img.load_jpeg(file->fileName().toStdString().c_str());
+
+    for (std::vector<bbox_t>::const_iterator bboxIter = faceBoxes.begin(); bboxIter != faceBoxes.end(); ++bboxIter) {
+        bbox_t faceBox = (*bboxIter);
+        img.draw_line(faceBox.outer.x1, faceBox.outer.y1, faceBox.outer.x2, faceBox.outer.y1, faceColor);
+        img.draw_line(faceBox.outer.x2, faceBox.outer.y1, faceBox.outer.x2, faceBox.outer.y2, faceColor);
+        img.draw_line(faceBox.outer.x2, faceBox.outer.y2, faceBox.outer.x1, faceBox.outer.y2, faceColor);
+        img.draw_line(faceBox.outer.x1, faceBox.outer.y2, faceBox.outer.x1, faceBox.outer.y1, faceColor);
+
+        // Transparent and opaque background text
+        img.draw_text((faceBox.outer.x2 + faceBox.outer.x1)/2.0,
+                      faceBox.outer.y1 - 15,
+                      QString::number(faceBox.pose).toStdString().c_str(),
+                      foregroundTextColor,
+                      0,
+                      1,
+                      poseTextSize);
+
+        for (size_t i=0; i<faceBox.boxes.size(); ++i) {
+            fbox_t part = faceBox.boxes[i];
+            img.draw_circle((part.x1 + part.x2)/2.0, (part.y1 + part.y2)/2.0, 5, pointColor, 0.5);
+
+            // Transparent and opaque background text
+            img.draw_text((part.x1 + part.x2)/2.0,
+                          (part.y1 + part.y2)/2.0 + 10,
+                          QString::number(i).toStdString().c_str(),
+                          foregroundTextColor,
+                          0,
+                          1,
+                          numberTextSize);
+        }
+    }
+
+    unsigned char* outbuffer = NULL;
+    unsigned long outsize = 0;
+    img.save_jpeg(&outbuffer, &outsize);
+    imageBytes.setRawData(reinterpret_cast<const char*>(outbuffer), outsize);
+    return true;
+}
+
+bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
     try {
         image_t* img = image_readJPG(file->fileName().toStdString().c_str());
         faceBoxes = facemodel_detect(faceModel, poseModel, img);
         image_delete(img);
-        error = false;
+        return true;
     }
     catch (...) {
-        error = true;
-        return QJsonDocument();
+        return false;
+    }
+}
+
+ bool GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document) {
+    std::vector<bbox_t> faceBoxes;
+
+    if (!getFaceBoxes(file, faceBoxes)) {
+        return false;
     }
 
     QJsonArray faces;
@@ -80,8 +174,8 @@ QJsonDocument GetFaceResource::getJSONFaces(QFile *file, bool& error) {
         faceParts["parts"] = parts;
         faces.append(faceParts);
     }
-    QJsonDocument doc(faces);
-    return doc;
+    document.setArray(faces);
+    return true;
 }
 
 QJsonObject GetFaceResource::getProfileParts(const bbox_t &faceBox) {
