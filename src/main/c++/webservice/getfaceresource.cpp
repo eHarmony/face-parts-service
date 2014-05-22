@@ -118,10 +118,14 @@ bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes) {
         }
     }
 
-    unsigned char* outbuffer = NULL;
-    unsigned long outsize = 0;
-    img.save_jpeg(&outbuffer, &outsize);
-    imageBytes.setRawData(reinterpret_cast<const char*>(outbuffer), outsize);
+    // Since we don't have libjpeg 8 we can't use jpeg_mem_dest.  As a result we have to
+    // go to file and then read the information back in.  The open/close/reset makes sure the file
+    // exists so we can write to it.
+    QTemporaryFile tempJpegFile;
+    tempJpegFile.open();
+    img.save_jpeg(tempJpegFile.fileName().toStdString().c_str());
+    imageBytes = tempJpegFile.readAll();
+    tempJpegFile.close();
     return true;
 }
 

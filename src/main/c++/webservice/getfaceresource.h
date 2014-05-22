@@ -5,8 +5,6 @@
 #include <detect-face/eHfacemodel.h>
 #include <detect-face/eHposemodel.h>
 
-#define cimg_use_jpeg
-
 class GetFaceResource : public HttpRequestHandler
 {
     Q_OBJECT

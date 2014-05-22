@@ -4,6 +4,9 @@ include(qtwebapp/bfLogging/src/bfLogging.pri)
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
+DEFINES+=cimg_display=0
+DEFINES+=cimg_use_jpeg
+
 HEADERS += \
     $$PWD/rapidxml.hpp \
     $$PWD/CImg.h \
@@ -44,7 +47,7 @@ SOURCES += \
 
 macx {
     INCLUDEPATH += /usr/local/include /opt/local/include /usr/local/include/tbb/ /opt/X11/include
-    LIBS += -L/usr/local/lib -L/opt/X11/lib
+    LIBS += -L/usr/local/lib -L/opt/X11/lib -lX11
 }
 
 unix:!macx {
@@ -52,4 +55,4 @@ unix:!macx {
     LIBS += -L/usr/lib64/atlas/ -L/usr/lib64
 }
 
-LIBS += -ljpeg -lcblas -ltbb -lX11
+LIBS += -ljpeg -lcblas -ltbb
