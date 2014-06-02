@@ -12,15 +12,15 @@ int main(int argc, char** argv) {
 
     QSettings settings(argv[1], QSettings::IniFormat, &app);
 
-    facemodel_t* faceModel = facemodel_readFromFile(settings.value("face_model").toString().toStdString().c_str());
-    posemodel_t* poseModel = posemodel_readFromFile(settings.value("pose_model").toString().toStdString().c_str());
+    facemodel_t* faceModel = facemodel_readFromFile(settings.value("faceModel").toString().toStdString().c_str());
+    posemodel_t* poseModel = posemodel_readFromFile(settings.value("poseModel").toString().toStdString().c_str());
 
     FileLogger logger(&settings);
     WebLogger::setFileLogger(&logger);
 
     QFile *ecvFile = NULL;
     if (settings.contains("ecv_file")) {
-        ecvFile = new QFile(settings.value("ecv_file").toString());
+        ecvFile = new QFile(settings.value("ecvFile").toString());
     }
     PathDelegator pathDelegator;
     pathDelegator.addPath("/face-parts/generate", new GetFaceResource(faceModel, poseModel, settings));

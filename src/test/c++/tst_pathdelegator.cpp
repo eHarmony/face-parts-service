@@ -38,3 +38,8 @@ void PathDelegatorTest::goodPath() {
 
     QCOMPARE(500, response.getStatus());
 }
+
+void PathDelegatorTest::testRemoveExtension() {
+    QCOMPARE(QString("abc"), QString(pathDelegator->removeExtension("abc.jpg")));
+    QCOMPARE(QString("abc"), QString(pathDelegator->removeExtension("abc")));
+}

@@ -1,7 +1,10 @@
 #include "httpheaders.h"
 
 const QByteArray HttpHeaders::ACCEPT = "accept";
-const QByteArray HttpHeaders::CONTENT_TYPE = "Content-Type";
-const QByteArray HttpHeaders::IMAGE_JPG = "image/jpg";
-const QByteArray HttpHeaders::IMAGE_JPEG = "image/jpeg";
-const QByteArray HttpHeaders::CONTENT_LENGTH = "Content-Length";
+const QByteArray HttpHeaders::CONTENT_TYPE = "content-type";
+const QByteArray HttpHeaders::CONTENT_LENGTH = "content-length";
+const QByteArray HttpHeaders::CACHE_CONTROL = "cache-control";
+const QByteArray HttpHeaders::NO_CACHE = "no-cache";
+
+const int HttpHeaders::STATUS_ERROR = 500;
+const int HttpHeaders::STATUS_NOT_FOUND = 404;

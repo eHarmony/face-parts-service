@@ -2,20 +2,36 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QCryptographicHash>
+#include <QDateTime>
 #include <detect-face/eHimage.h>
-#include <CImg.h>
 #include <httpheaders.h>
 
+const QByteArray GetFaceResource::FILE_IO_ERROR = "Internal processing error, is the uploaded file a valid jpeg?  ";
+const QByteArray GetFaceResource::NO_FILE_ERROR = "Cannot find the file parameter";
+const QByteArray GetFaceResource::IMAGE_TYPE_NOT_SUPPORTED = "Requested image type is not supported";
+const QByteArray GetFaceResource::NO_CHECKSUM ="Cannot calculate checksum!!!";
+const QByteArray GetFaceResource::JPEG = "jpeg";
+const QByteArray GetFaceResource::JPG = "jpg";
+
 GetFaceResource::GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel, const QSettings& settings, QObject *parent) :
-    HttpRequestHandler(parent) {
+    HttpRequestHandler(parent),
+    profilePoints(settings.value("profilePoints", 39).toInt()),
+    frontalPoints(settings.value("frontalPoints", 68).toInt()),
+    imageExtensions(settings.value("imageResponses", "jpg,jpeg,png").toStringList()),
+    uploadedFileName(settings.value("uploadedFileName", "file").toByteArray()),
+    poseTextSize(settings.value("poseTextSize", 20).toInt()),
+    numberTextSize(settings.value("numberTextSize", 15).toInt())
+{
     this->faceModel = faceModel;
     this->poseModel = poseModel;
 
-    QStringList faceColorStr = settings.value("faceColor", QStringList(QStringList() << "255" << "0" << "0")).toStringList();
-    QStringList foregroundTextColorStr = settings.value("foregroundTextColor", QStringList(QStringList() << "0" << "0" << "0")).toStringList();
-    QStringList pointColorStr = settings.value("pointColor", QStringList(QStringList() << "0" << "255" << "0")).toStringList();
-    poseTextSize = settings.value("poseTextSize", 20).toInt();
-    numberTextSize = settings.value("numberTextSize", 15).toInt();
+    // These setting control how the returned JPEG has data drawn on it.  The face color is the color of the lines surrounding the faces.
+    // The foreground text color is the text color (the backgroud is transparent).  The point color is the color of the fiducial markers.
+    // the pose text size is the font size for the pose label, and the number text size is the font size for the number labels.
+    QStringList faceColorStr = settings.value("faceColor", "255,0,0").toStringList();
+    QStringList foregroundTextColorStr = settings.value("foregroundTextColor", "0,0,0").toStringList();
+    QStringList pointColorStr = settings.value("pointColor", "0,255,0").toStringList();
 
     faceColor = initArray(faceColorStr);
     foregroundTextColor = initArray(foregroundTextColorStr);
@@ -49,17 +65,26 @@ GetFaceResource::~GetFaceResource() {
 }
 
 void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
-    QFile* file = request.getUploadedFile("file");
+    QFile* file = request.getUploadedFile(uploadedFileName);
     if (file) {
-        if (request.getPath().endsWith(".jpeg") || request.getPath().endsWith(".jpg")) {
-            QByteArray imageBytes;
-            if (drawFacesOnImage(file, imageBytes)) {
-                response.setHeader(HttpHeaders::CONTENT_TYPE, HttpHeaders::IMAGE_JPEG);
-                response.setHeader(HttpHeaders::CONTENT_LENGTH, imageBytes.size());
-                response.write(imageBytes);
+        QByteArray path = request.getPath().toLower();
+        int extensionLocation = path.lastIndexOf(".");
+        if (extensionLocation > 0) {
+            QByteArray extension = path.right(path.size() - extensionLocation);
+            if (imageExtensions.contains(extension)) {
+                QByteArray imageBytes;
+                if (drawFacesOnImage(file, imageBytes, extension)) {
+                    response.setHeader(HttpHeaders::CONTENT_TYPE, QByteArray("image/") + extension);
+                    response.setHeader(HttpHeaders::CONTENT_LENGTH, imageBytes.size());
+                    response.setHeader(HttpHeaders::CACHE_CONTROL, HttpHeaders::NO_CACHE);
+                    response.write(imageBytes);
+                }
+                else {
+                    response.setStatus(HttpHeaders::STATUS_ERROR, generateErrorMessage(file));
+                }
             }
             else {
-                response.setStatus(500, "Internal processing error, is the uploaded file a valid jpeg?");
+                response.setStatus(HttpHeaders::STATUS_ERROR, IMAGE_TYPE_NOT_SUPPORTED);
             }
         }
         else {
@@ -68,16 +93,31 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
                 response.write(doc.toJson(QJsonDocument::Compact));
             }
             else {
-                response.setStatus(500, "Internal processing error, is the uploaded file a valid jpeg?");
+                response.setStatus(HttpHeaders::STATUS_ERROR, generateErrorMessage(file));
             }
         }
     }
     else {
-        response.setStatus(500, "Cannot find the file parameter");
+        response.setStatus(HttpHeaders::STATUS_ERROR, NO_FILE_ERROR);
     }
 }
 
-bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes) {
+QByteArray GetFaceResource::generateErrorMessage(QFile *file) const {
+    QByteArray now = QDateTime::currentDateTime().toString(Qt::ISODate).toUtf8();
+    QByteArray checksum;
+    if (file->open(QIODevice::ReadOnly)) {
+        QByteArray fileBytes = file->readAll();
+        file->close();
+
+        checksum = QByteArray(QCryptographicHash::hash(fileBytes, QCryptographicHash::Md5).toHex().toUpper());
+    }
+    else {
+        checksum = NO_CHECKSUM;
+    }
+    return FILE_IO_ERROR + QByteArray("Time: ") + now + QByteArray("Checksum: ") + checksum;
+}
+
+bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, const QByteArray& extension) {
     std::vector<bbox_t> faceBoxes;
 
     if (!getFaceBoxes(file, faceBoxes)) {
@@ -118,14 +158,24 @@ bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes) {
         }
     }
 
+    return saveFacesOnImage(img, imageBytes, extension);
+}
+
+bool GetFaceResource::saveFacesOnImage(const cimg_library::CImg<int>& img, QByteArray &imageBytes, const QByteArray &extension) {
     // Since we don't have libjpeg 8 we can't use jpeg_mem_dest.  As a result we have to
     // go to file and then read the information back in.  We have to open it first so that it exists
     // then we close it after we read it back in.
-    QTemporaryFile tempJpegFile;
-    tempJpegFile.open();
-    img.save_jpeg(tempJpegFile.fileName().toStdString().c_str());
-    imageBytes = tempJpegFile.readAll();
-    tempJpegFile.close();
+    QTemporaryFile tempImageFile;
+    tempImageFile.open();
+    const char* fileName = tempImageFile.fileName().toStdString().c_str();
+    if (extension == JPG || extension == JPEG) {
+        img.save_jpeg(fileName);
+    }
+    else {
+        return false;
+    }
+    imageBytes = tempImageFile.readAll();
+    tempImageFile.close();
     return true;
 }
 
@@ -161,16 +211,16 @@ bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) 
         faceParts["pose"] = faceBox.pose;
 
         QJsonObject parts;
-        switch (faceBox.boxes.size()) {
-        case 39:
+        int numBoxes = (int)faceBox.boxes.size();
+        if (numBoxes == profilePoints) {
             parts = getProfileParts(faceBox);
             faceParts["model"] = QString("profile");
-            break;
-        case 68:
+        }
+        else if (numBoxes == frontalPoints) {
             parts = getFrontalParts(faceBox);
             faceParts["model"] = QString("frontal");
-            break;
-        default:
+        }
+        else {
             parts = getUnknownParts(faceBox);
             faceParts["model"] = QString("unknown");
         }

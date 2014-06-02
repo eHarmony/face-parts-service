@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QCoreApplication>
 
+
 HttpConnectionHandler::HttpConnectionHandler(QSettings* settings, HttpRequestHandler* requestHandler)
     : QThread()
 {
@@ -69,7 +70,7 @@ void HttpConnectionHandler::handleConnection(tSocketDescriptor socketDescriptor)
     readTimer.start(readTimeout);
     // delete previous request
     delete currentRequest;
-    currentRequest=0;
+    currentRequest=NULL;
 }
 
 
@@ -90,7 +91,7 @@ void HttpConnectionHandler::readTimeout() {
 
     socket.disconnectFromHost();
     delete currentRequest;
-    currentRequest=0;
+    currentRequest=NULL;
 }
 
 
@@ -127,7 +128,7 @@ void HttpConnectionHandler::read() {
         socket.write("HTTP/1.1 413 entity too large\r\nConnection: close\r\n\r\n413 Entity too large\r\n");
         socket.disconnectFromHost();
         delete currentRequest;
-        currentRequest=0;
+        currentRequest=NULL;
         return;
     }
 
@@ -158,6 +159,6 @@ void HttpConnectionHandler::read() {
         }
         // Prepare for next request
         delete currentRequest;
-        currentRequest=0;
+        currentRequest=NULL;
     }
 }

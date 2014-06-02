@@ -14,6 +14,7 @@ public:
     virtual ~PathDelegator();
     void service(HttpRequest &request, HttpResponse &response);
     void addPath(const QByteArray& path, HttpRequestHandler* handler);
+    QByteArray removeExtension(const QByteArray& path) const;
 
 private:
     QMap<QByteArray, HttpRequestHandler*> paths;

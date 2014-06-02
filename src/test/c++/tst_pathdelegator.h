@@ -18,6 +18,7 @@ private:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
+    void testRemoveExtension();
 
     void noPath();
     void goodPath();

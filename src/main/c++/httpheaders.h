@@ -8,9 +8,11 @@ class HttpHeaders
 public:
     const static QByteArray CONTENT_TYPE;
     const static QByteArray ACCEPT;
-    const static QByteArray IMAGE_JPG;
-    const static QByteArray IMAGE_JPEG;
     const static QByteArray CONTENT_LENGTH;
+    const static QByteArray CACHE_CONTROL;
+    const static QByteArray NO_CACHE;
+    const static int STATUS_ERROR;
+    const static int STATUS_NOT_FOUND;
 
 };
 
