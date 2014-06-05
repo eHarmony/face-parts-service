@@ -13,7 +13,7 @@ public:
     explicit GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel, const QSettings& settings, QObject *parent = 0);
     virtual ~GetFaceResource();
     void service(HttpRequest &request, HttpResponse &response);
-    bool getJSONFaces(QFile *file, QJsonDocument& document);
+    bool getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints=false);
 
 private:
     facemodel_t* faceModel;

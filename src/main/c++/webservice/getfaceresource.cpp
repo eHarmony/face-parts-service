@@ -70,7 +70,7 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
         QByteArray path = request.getPath().toLower();
         int extensionLocation = path.lastIndexOf(".");
         if (extensionLocation > 0) {
-            QByteArray extension = path.right(path.size() - extensionLocation);
+            QByteArray extension = path.right(path.size() - extensionLocation - 1);
             if (imageExtensions.contains(extension)) {
                 QByteArray imageBytes;
                 if (drawFacesOnImage(file, imageBytes, extension)) {
@@ -89,7 +89,8 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
         }
         else {
             QJsonDocument doc;
-            if (getJSONFaces(file, doc)) {
+            bool writeJustPoints = request.getParameterMap().contains("points") && request.getParameter("points") == "inline";
+            if (getJSONFaces(file, doc, writeJustPoints)) {
                 response.write(doc.toJson(QJsonDocument::Compact));
             }
             else {
@@ -114,7 +115,7 @@ QByteArray GetFaceResource::generateErrorMessage(QFile *file) const {
     else {
         checksum = NO_CHECKSUM;
     }
-    return FILE_IO_ERROR + QByteArray("Time: ") + now + QByteArray("Checksum: ") + checksum;
+    return FILE_IO_ERROR + QByteArray("Time: ") + now + QByteArray("  Checksum: ") + checksum;
 }
 
 bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, const QByteArray& extension) {
@@ -191,7 +192,7 @@ bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) 
     }
 }
 
- bool GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document) {
+ bool GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints) {
     std::vector<bbox_t> faceBoxes;
 
     if (!getFaceBoxes(file, faceBoxes)) {
@@ -210,22 +211,32 @@ bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) 
         faceParts["face"] = face;
         faceParts["pose"] = faceBox.pose;
 
-        QJsonObject parts;
         int numBoxes = (int)faceBox.boxes.size();
-        if (numBoxes == profilePoints) {
-            parts = getProfileParts(faceBox);
-            faceParts["model"] = QString("profile");
-        }
-        else if (numBoxes == frontalPoints) {
-            parts = getFrontalParts(faceBox);
-            faceParts["model"] = QString("frontal");
+        if (writeJustPoints) {
+            QJsonArray parts;
+            for (std::vector<fbox_t>::const_iterator fboxIter = faceBox.boxes.begin(); fboxIter != faceBox.boxes.end(); ++fboxIter) {
+                fbox_t box = *fboxIter;
+                parts.append((box.x1 + box.x2)/2.0);
+                parts.append((box.y2 + box.y2)/2.0);
+            }
+            faceParts["parts"] = parts;
         }
         else {
-            parts = getUnknownParts(faceBox);
-            faceParts["model"] = QString("unknown");
+            QJsonObject parts;
+            if (numBoxes == profilePoints) {
+                parts = getProfileParts(faceBox);
+                faceParts["model"] = QString("profile");
+            }
+            else if (numBoxes == frontalPoints) {
+                parts = getFrontalParts(faceBox);
+                faceParts["model"] = QString("frontal");
+            }
+            else {
+                parts = getUnknownParts(faceBox);
+                faceParts["model"] = QString("unknown");
+            }
+            faceParts["parts"] = parts;
         }
-
-        faceParts["parts"] = parts;
         faces.append(faceParts);
     }
     document.setArray(faces);

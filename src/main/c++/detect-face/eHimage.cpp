@@ -81,12 +81,21 @@ image_t* image_readJPG(const char* filename) {
         return NULL;
     }
     image_t* im = image_alloc(img.height(), img.width());
+    // We only know how to handle grayscale and rgb images
+    int numComponents = img.spectrum();
     for(unsigned y=0;y<im->sizy;y++) {
         for(unsigned x=0;x<im->sizx;x++) {
             int offset = y+x*im->stepy;
-            im->ch[0][offset]=img(x, y, 0, 0);
-            im->ch[1][offset]=img(x, y, 0, 1);
-            im->ch[2][offset]=img(x, y, 0, 2);
+            if (numComponents == 1) {
+                im->ch[0][offset]=img(x, y, 0, 0);
+                im->ch[1][offset]=img(x, y, 0, 0);
+                im->ch[2][offset]=img(x, y, 0, 0);
+            }
+            else if (numComponents >= 3) {
+                im->ch[0][offset]=img(x, y, 0, 0);
+                im->ch[1][offset]=img(x, y, 0, 1);
+                im->ch[2][offset]=img(x, y, 0, 2);
+            }
         }
     }
     return im;
