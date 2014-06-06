@@ -29,6 +29,7 @@ private Q_SLOTS:
     void badFile();
     void noFile();
     void noFace();
+    void grayscale();
 };
 
 DECLARE_TEST(GetFaceResourceTest)

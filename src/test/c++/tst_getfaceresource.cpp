@@ -50,6 +50,10 @@ void GetFaceResourceTest::faceFromPose() {
     testFaces("10156670_4");
 }
 
+void GetFaceResourceTest::grayscale() {
+    testFaces("grayscale");
+}
+
 void GetFaceResourceTest::noFace() {
     QFile file(testResources + "/48170621_4.jpg");
     QJsonDocument doc;
