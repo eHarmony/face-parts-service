@@ -9142,6 +9142,10 @@ namespace cimg_library_suffixed {
     bool _is_shared;
     T *_data;
 
+#ifdef cimg_use_jpeg
+    J_COLOR_SPACE _jpegColorSpace;
+#endif
+
     //! Simple iterator type, to loop through each pixel value of an image instance.
     /**
        \note
@@ -35720,6 +35724,12 @@ namespace cimg_library_suffixed {
       return CImg<T>().load_jpeg(file);
     }
 
+#ifdef cimg_use_jpeg
+    J_COLOR_SPACE getJpegColorSpace() const {
+        return _jpegColorSpace;
+    }
+#endif
+
     // Custom error handler for libjpeg.
 #ifdef cimg_use_jpeg
     struct _cimg_error_mgr {
@@ -35768,6 +35778,7 @@ namespace cimg_library_suffixed {
       jpeg_stdio_src(&cinfo,nfile);
       jpeg_read_header(&cinfo,TRUE);
       jpeg_start_decompress(&cinfo);
+      _jpegColorSpace = cinfo.jpeg_color_space;
 
       if (cinfo.output_components!=1 && cinfo.output_components!=3 && cinfo.output_components!=4) {
         if (!file) {

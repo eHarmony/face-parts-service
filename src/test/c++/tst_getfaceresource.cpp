@@ -2,6 +2,7 @@
 #include <QString>
 #include <QtTest>
 #include <webservice/getfaceresource.h>
+#include <iostream>
 
 void GetFaceResourceTest::initTestCase() {
     QString modelResources = property("resources").toString();
@@ -54,8 +55,16 @@ void GetFaceResourceTest::grayscale() {
     testFaces("grayscale");
 }
 
+void GetFaceResourceTest::cmyk() {
+    testFaces("cmyk");
+}
+
 void GetFaceResourceTest::noFace() {
-    QFile file(testResources + "/48170621_4.jpg");
+    testNoFaces("48170621_4");
+}
+
+void GetFaceResourceTest::testNoFaces(const QString &fileName) {
+    QFile file(testResources + QDir::separator() + fileName + ".jpg");
     QJsonDocument doc;
     bool success = faceResource->getJSONFaces(&file, doc);
     file.close();
@@ -67,7 +76,7 @@ void GetFaceResourceTest::noFace() {
 }
 
 void GetFaceResourceTest::testFaces(const QString& fileName) {
-    QString base = testResources + "/" + fileName;
+    QString base = testResources + QDir::separator() + fileName;
     QFile file(base + ".jpg");
     QJsonDocument current;
     bool success = faceResource->getJSONFaces(&file, current);

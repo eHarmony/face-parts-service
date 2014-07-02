@@ -80,18 +80,36 @@ image_t* image_readJPG(const char* filename) {
         WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not open ") + filename);
         return NULL;
     }
+    bool isGrayScale = false;
+    switch (img.getJpegColorSpace()) {
+        case JCS_GRAYSCALE:
+            isGrayScale = true;
+            break;
+        case JCS_RGB:
+            // Nothing to do, this is what we're set up to handle
+        case JCS_YCbCr:
+            // It appears that a lot of our images are incorrectly identified
+            // as Y Cb Cr when they are actually RGB
+            break;
+        case JCS_CMYK:
+        case JCS_YCCK:
+            img.CMYKtoRGB();
+            break;
+        default:
+            WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not detect color space ") + filename);
+            return NULL;
+    }
+
     image_t* im = image_alloc(img.height(), img.width());
-    // We only know how to handle grayscale and rgb images
-    int numComponents = img.spectrum();
     for(unsigned y=0;y<im->sizy;y++) {
         for(unsigned x=0;x<im->sizx;x++) {
             int offset = y+x*im->stepy;
-            if (numComponents == 1) {
+            if (isGrayScale) {
                 im->ch[0][offset]=img(x, y, 0, 0);
                 im->ch[1][offset]=img(x, y, 0, 0);
                 im->ch[2][offset]=img(x, y, 0, 0);
             }
-            else if (numComponents >= 3) {
+            else {
                 im->ch[0][offset]=img(x, y, 0, 0);
                 im->ch[1][offset]=img(x, y, 0, 1);
                 im->ch[2][offset]=img(x, y, 0, 2);

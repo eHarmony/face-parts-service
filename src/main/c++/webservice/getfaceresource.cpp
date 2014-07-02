@@ -183,6 +183,9 @@ bool GetFaceResource::saveFacesOnImage(const cimg_library::CImg<int>& img, QByte
 bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
     try {
         image_t* img = image_readJPG(file->fileName().toStdString().c_str());
+        if (img == NULL) {
+            return false;
+        }
         faceBoxes = facemodel_detect(faceModel, poseModel, img);
         image_delete(img);
         return true;

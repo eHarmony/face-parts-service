@@ -14,6 +14,7 @@ class GetFaceResourceTest : public QObject
 private:
     GetFaceResource *faceResource;
 
+    void testNoFaces(const QString& fileName);
     void testFaces(const QString& fileName);
     void compareDoubles(double actual, double expected, double delta);
     void printSVG(const QString& fileName);
@@ -23,6 +24,7 @@ private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
+    void cmyk();
     void goodFace();
     void profile();
     void faceFromPose();
