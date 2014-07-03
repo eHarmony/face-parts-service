@@ -13,6 +13,11 @@ PathDelegator::~PathDelegator() {
     }
 }
 
+/**
+ * @brief PathDelegator::service -- Delegate the request to the service designed to handle that request
+ * @param request
+ * @param response
+ */
 void PathDelegator::service(HttpRequest &request, HttpResponse &response) {
     QByteArray path = removeExtension(request.getPath());
     if (paths.contains(path)) {
@@ -23,10 +28,20 @@ void PathDelegator::service(HttpRequest &request, HttpResponse &response) {
     }
 }
 
+/**
+ * @brief PathDelegator::addPath -- Add a service at a specific path
+ * @param path
+ * @param handler
+ */
 void PathDelegator::addPath(const QByteArray &path, HttpRequestHandler *handler) {
     paths.insert(path, handler);
 }
 
+/**
+ * @brief PathDelegator::removeExtension -- A helper method to remove the extension from a path
+ * @param path
+ * @return the path with the extension removed.
+ */
 QByteArray PathDelegator::removeExtension(const QByteArray &path) const {
     if (path.contains(".")) {
         return path.left(path.indexOf("."));

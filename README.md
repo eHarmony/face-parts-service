@@ -4,11 +4,11 @@ This is a RESTful API for segmenting human faces from an image.  The software is
 
 1.  Remove the dependency on Matlab
 2.  Make the code more usable by wrapping it in a RESTful API.  This makes use of a modified version of [QtWebApp](http://stefanfrings.de/qtwebapp/index-en.html)
-3.  Speed the code up by making use of [Threaded Building Blocks](https://www.threadingbuildingblocks.org/)
+3.  Speed up the code by making use of [Threaded Building Blocks](https://www.threadingbuildingblocks.org/)
 
 # Mac Compile Instructions
 
-1.  Install XCode developer tools (not sure about this one)
+1.  Install XCode developer tools and homebrew
 2.  brew install tbb
 3.  Install MacPorts from [here](https://www.macports.org/install.php)
 4.  sudo port install atlas +nofortran (might take a while)
@@ -55,6 +55,10 @@ If the request was successful, a 200 response will be returned along with some J
         }
     ]
 
+The server is also able to return an image with the information about the face overlayed on it.  In order to do that, submit the same request as above to http://localhost:8084/face-parts/generate.jpg
+
+If you want to get just a list of the points instead of the descriptive regions, submit the request to http://localhost:8084/face-parts/generate?points=inline
+
 # Configuration
 
 The webserver can be configured in a variety of ways.  An example configuration file is found at `src/main/resources/configfile.ini`.  It is very important that the lines
@@ -62,4 +66,4 @@ The webserver can be configured in a variety of ways.  An example configuration 
     face_model=src/main/resources/face_p146.xml
     pose_model=src/main/resources/pose_BUFFY.xml
 
-point to valid files, as these represent the models used for segmentation.  These paths are relative to the directory the program was started from.  
+point to valid files, as these represent the models used for segmentation.  These paths are relative to the directory the program was started from.

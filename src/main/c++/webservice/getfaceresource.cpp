@@ -14,6 +14,18 @@ const QByteArray GetFaceResource::NO_CHECKSUM ="Cannot calculate checksum!!!";
 const QByteArray GetFaceResource::JPEG = "jpeg";
 const QByteArray GetFaceResource::JPG = "jpg";
 
+/**
+ * @brief GetFaceResource::GetFaceResource
+ *
+ * This constructor is responsible for extracting
+ * all the settings applicable to this resource.  These values will be set accoriding to the supplied
+ * settings, or by reasonable defaults.
+ *
+ * @param faceModel
+ * @param poseModel
+ * @param settings
+ * @param parent
+ */
 GetFaceResource::GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel, const QSettings& settings, QObject *parent) :
     HttpRequestHandler(parent),
     profilePoints(settings.value("profilePoints", 39).toInt()),
@@ -38,6 +50,11 @@ GetFaceResource::GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel,
     pointColor = initArray(pointColorStr);
 }
 
+/**
+ * @brief GetFaceResource::initArray -- Copy the unsigned integer values in values to an array.
+ * @param values
+ * @return A native const unsigned char* array of the StringList
+ */
 const unsigned char* GetFaceResource::initArray(const QStringList &values) {
     unsigned char* array = new unsigned char[values.length()];
     for (int i=0; i<values.length(); ++i) {
@@ -64,6 +81,23 @@ GetFaceResource::~GetFaceResource() {
     }
 }
 
+/**
+ * @brief GetFaceResource::service
+ *
+ * The method called when an HTTP request comes in for this service.  In order
+ * to proceed with any processing, a file must be uploaded via a multipart form with the name declared by the
+ * uploadedFileName setting.  If this file is not present, a 500 is returned.
+ *
+ * If no other parameters are present, a JSON object is returned with a structured version of any faces found.
+ * Examples of the JSON structure can be seen in the test directory.
+ *
+ * The request will also respond to extensions of the path which request an image specified in the imageExtensions list.
+ * if this is the case the Face Parts will be drawn on the input image and a new image returned.  The request will also
+ * respond to a parameter called points.  If that parameter is present, and it's value is inline then the parts JSON will
+ * not contain a structured value of the points, and just list the points in order.
+ * @param request
+ * @param response
+ */
 void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
     QFile* file = request.getUploadedFile(uploadedFileName);
     if (file) {
@@ -103,6 +137,16 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
     }
 }
 
+/**
+ * @brief GetFaceResource::generateErrorMessage -- Create an error message using the checksum of the file
+ *
+ * This will create an error message using the Md5 checksum of the supplied file.  This is useful such that
+ * if mining an error log, one can go back and find the exact file that caused the error message by comparing
+ * checksums.
+ *
+ * @param file
+ * @return the error message
+ */
 QByteArray GetFaceResource::generateErrorMessage(QFile *file) const {
     QByteArray now = QDateTime::currentDateTime().toString(Qt::ISODate).toUtf8();
     QByteArray checksum;
@@ -118,6 +162,17 @@ QByteArray GetFaceResource::generateErrorMessage(QFile *file) const {
     return FILE_IO_ERROR + QByteArray("Time: ") + now + QByteArray("  Checksum: ") + checksum;
 }
 
+/**
+ * @brief GetFaceResource::drawFacesOnImage -- Draws the face parts on the supplied jpeg image.
+ *
+ * This will draw all the face parts on the supplied imageBytes.  The imageBytes are modified to
+ * contain the face parts.  This will use a variety of the settings to help the drawing process.
+ *
+ * @param file
+ * @param imageBytes
+ * @param extension
+ * @return whether drawing was successful
+ */
 bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, const QByteArray& extension) {
     std::vector<bbox_t> faceBoxes;
 
@@ -162,6 +217,13 @@ bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, cons
     return saveFacesOnImage(img, imageBytes, extension);
 }
 
+/**
+ * @brief GetFaceResource::saveFacesOnImage -- Reads the supplied CImg and puts the image into imageBytes.
+ * @param img
+ * @param imageBytes
+ * @param extension
+ * @return whether saving was successful
+ */
 bool GetFaceResource::saveFacesOnImage(const cimg_library::CImg<int>& img, QByteArray &imageBytes, const QByteArray &extension) {
     // Since we don't have libjpeg 8 we can't use jpeg_mem_dest.  As a result we have to
     // go to file and then read the information back in.  We have to open it first so that it exists
@@ -180,6 +242,12 @@ bool GetFaceResource::saveFacesOnImage(const cimg_library::CImg<int>& img, QByte
     return true;
 }
 
+/**
+ * @brief GetFaceResource::getFaceBoxes -- Gets the face parts of the image in the file.
+ * @param file
+ * @param faceBoxes
+ * @return whether getting the face parts was successful
+ */
 bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
     try {
         image_t* img = image_readJPG(file->fileName().toStdString().c_str());
@@ -195,7 +263,14 @@ bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) 
     }
 }
 
- bool GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints) {
+/**
+ * @brief GetFaceResource::getJSONFaces -- Gets the face parts as JSON of the file and writes it to the document.
+ * @param file
+ * @param document
+ * @param writeJustPoints -- Says whether or not to list the points or break them down into meaningful groups
+ * @return whether of not the document was modified successfully
+ */
+bool GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints) {
     std::vector<bbox_t> faceBoxes;
 
     if (!getFaceBoxes(file, faceBoxes)) {
@@ -246,6 +321,11 @@ bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) 
     return true;
 }
 
+/**
+ * @brief GetFaceResource::getProfileParts -- Gets the face parts for the profile model
+ * @param faceBox
+ * @return a JSON object of profile parts
+ */
 QJsonObject GetFaceResource::getProfileParts(const bbox_t &faceBox) {
     QJsonObject parts;
     parts["nose bottom to top"] = extractParts(faceBox, 0, 6);
@@ -256,6 +336,11 @@ QJsonObject GetFaceResource::getProfileParts(const bbox_t &faceBox) {
     return parts;
 }
 
+/**
+ * @brief GetFaceResource::getFrontalParts -- Gets the face parts for the frontal model
+ * @param faceBox
+ * @return a JSON object of frontal parts
+ */
 QJsonObject GetFaceResource::getFrontalParts(const bbox_t &faceBox) {
     QJsonObject parts;
     parts["nostrils right to left"] = extractParts(faceBox, 0, 5);
@@ -271,6 +356,11 @@ QJsonObject GetFaceResource::getFrontalParts(const bbox_t &faceBox) {
     return parts;
 }
 
+/**
+ * @brief GetFaceResource::getUnknownParts -- Gets the face parts for an unknown model
+ * @param faceBox
+ * @return a JSON object of uknown parts
+ */
 QJsonObject GetFaceResource::getUnknownParts(const bbox_t &faceBox) {
     QJsonObject parts;
     for (size_t i=0; i<faceBox.boxes.size(); ++i) {
@@ -279,6 +369,13 @@ QJsonObject GetFaceResource::getUnknownParts(const bbox_t &faceBox) {
     return parts;
 }
 
+/**
+ * @brief GetFaceResource::extractParts -- Extract all the parts from start to end in the faceBox array
+ * @param faceBox
+ * @param start
+ * @param end
+ * @return a JSON array of all the parts from start to end
+ */
 QJsonArray GetFaceResource::extractParts(const bbox_t &faceBox, const size_t start, const size_t end) {
     QJsonArray parts;
     for (size_t i=start; i<end; ++i) {
@@ -287,6 +384,12 @@ QJsonArray GetFaceResource::extractParts(const bbox_t &faceBox, const size_t sta
     return parts;
 }
 
+/**
+ * @brief GetFaceResource::extractPart -- Extract one specific face part at the center of the box at index i
+ * @param faceBox
+ * @param i
+ * @return a JSON object of the (x, y) center of the identified box, and index as num
+ */
 QJsonObject GetFaceResource::extractPart(const bbox_t &faceBox, const size_t i) {
     fbox_t box = faceBox.boxes[i];
     QJsonObject part;

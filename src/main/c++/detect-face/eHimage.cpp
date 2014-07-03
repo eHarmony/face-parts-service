@@ -73,6 +73,17 @@ void image_zero(image_t* img, const double* val) {
 				img->ch[ch][x*img->stepy+y]=val[ch];
 }
 
+/**
+ * @brief image_readJPG -- Reads a file and returns the data as an RGB image_t
+ *
+ * This method uses CImg to actually read the file from disk.  After reading the file, a custom extension to CImg allows
+ * the user to obtain the JPEG color space.  This color space then allows us to convert the CImg image pixels into RGB if
+ * this is required.  It would appear, according to some tests, that the color space for RGB does not seem to arise,
+ * and instead it is incorrectly identified as RGB.  As a result, we are leaving YCrCb images alone.
+ *
+ * @param filename
+ * @return an RGB version of the file or NULL if the file could not be read
+ */
 image_t* image_readJPG(const char* filename) {
     cimg_library::CImg<int> img;
     img.load_jpeg(filename);
@@ -80,7 +91,9 @@ image_t* image_readJPG(const char* filename) {
         WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not open ") + filename);
         return NULL;
     }
-    bool isGrayScale = false;
+    // If this image only has one element in the spectrum, then we cannot read elements
+    // 0, 1, and 2 as we would below
+    bool isGrayScale = img.spectrum() == 1;
     switch (img.getJpegColorSpace()) {
         case JCS_GRAYSCALE:
             isGrayScale = true;
