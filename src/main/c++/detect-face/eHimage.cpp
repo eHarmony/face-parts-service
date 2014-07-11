@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <string.h>
 #include <weblogger.h>
+#include <jpeglib.h>
 
 static inline int round2int(double x) { return (int)(x+0.5);}
 
@@ -94,7 +95,21 @@ image_t* image_readJPG(const char* filename) {
     // If this image only has one element in the spectrum, then we cannot read elements
     // 0, 1, and 2 as we would below
     bool isGrayScale = img.spectrum() == 1;
-    switch (img.getJpegColorSpace()) {
+
+    // This is necessary to get the jpeg color space.  We're not doing anything with
+    // the error because we're already loading this file once with CImg and if there
+    // was an error, it would have thrown an error at that time.
+    struct jpeg_decompress_struct cinfo;
+    struct jpeg_error_mgr jerr;
+    cinfo.err = jpeg_std_error(&jerr);
+
+    std::FILE *const file = std::fopen(filename,"rb");
+    jpeg_create_decompress(&cinfo);
+    jpeg_stdio_src(&cinfo,file);
+    jpeg_read_header(&cinfo,TRUE);
+    std::fclose(file);
+
+    switch (cinfo.jpeg_color_space) {
         case JCS_GRAYSCALE:
             isGrayScale = true;
             break;
