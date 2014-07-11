@@ -31,7 +31,7 @@ We are using maven as a build architecture.  I have tested this using [maven ver
 
 # Running the Server
 
-In order to start the webserver run `target/classes/face-parts-service src/main/resources/configfile.ini`.  At this point, the server is ready to segment images.  In order to submit an image, create a multipart form and submit a JPEG file (right now the server only works with JPEGs) to http://localhost:8084/face-parts/generate with a key named "file".  An example of submitting a file using the [Chrome](https://www.google.com/intl/en-US/chrome/browser/) web browser extensions [Postman](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en) can be seen below.
+In order to start the webserver run `target/classes/face-parts-service src/main/resources/configfile.ini`.  At this point, the server is ready to segment images.  In order to submit an image, create a multipart form and submit a JPEG file (right now the server only works with JPEGs) to http://localhost:8084/face-parts/generate with a key named "file".  An example of submitting a file using the [Chrome](https://www.google.com/intl/en-US/chrome/browser/) web browser extension [Postman](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en) can be seen below.
 
 ![Submitting an image with Postman](/images/postman_demo.png)
 
