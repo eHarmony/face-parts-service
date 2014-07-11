@@ -1,12 +1,12 @@
 # Executive Summary
 
-This is a RESTful API for segmenting human faces from an image.  The software is powered by [face parts](http://www.ics.uci.edu/~xzhu/face/).  The goal of this project is threefold:
+This is a RESTful API for segmenting human faces from an image.  The software is powered by [face parts](http://www.ics.uci.edu/~xzhu/face/) using [CImg](http://cimg.sourceforge.net/) for image loading.  The goal of this project is threefold:
 
 1.  Remove the dependency on Matlab
 2.  Make the code more usable by wrapping it in a RESTful API.  This makes use of a modified version of [QtWebApp](http://stefanfrings.de/qtwebapp/index-en.html)
 3.  Speed up the code by making use of [Threaded Building Blocks](https://www.threadingbuildingblocks.org/)
 
-# Mac Compile Instructions
+# Mac Necessary Libraries
 
 1.  Install XCode developer tools and homebrew
 2.  brew install tbb
@@ -14,12 +14,19 @@ This is a RESTful API for segmenting human faces from an image.  The software is
 4.  sudo port install atlas +nofortran (might take a while)
 5.  Download and install Qt 5.2.1 from [here](http://qt-project.org/downloads)
 
-# Red Hat Compile Instructions
+# Red Necessary Libraries
 
 1.  sudo yum install atlas-devel.x86_64
 2.  sudo yum install libjpeg-devel
 3.  sudo yum install tbb-devel
 4.  sudo yum install qt5-base-devel
+
+# Ubuntu Necessary Libraries
+
+1.  sudo apt-get install libatlas-dev
+2.  sudo apt-get install libjpeg-dev
+3.  sudo apt-get install libtbb-dev
+4.  sudo apt-get install qt5-default
 
 (for running the code, don't install the devel versions, just use the regular versions)
 
