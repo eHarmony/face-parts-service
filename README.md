@@ -14,19 +14,21 @@ This is a RESTful API for segmenting human faces from an image.  The software is
 4.  sudo port install atlas +nofortran (might take a while)
 5.  Download and install Qt 5.2.1 from [here](http://qt-project.org/downloads)
 
-# Red Necessary Libraries
+# Red Hat Necessary Libraries (Tested on Centos 6.5)
 
 1.  sudo yum install atlas-devel.x86_64
 2.  sudo yum install libjpeg-devel
 3.  sudo yum install tbb-devel
-4.  sudo yum install qt5-base-devel
+4.  sudo yum install qt5-qtbase-devel
 
-# Ubuntu Necessary Libraries
+# Ubuntu Necessary Libraries (Tested on Ubuntu 14.04)
 
 1.  sudo apt-get install libatlas-dev
 2.  sudo apt-get install libjpeg-dev
 3.  sudo apt-get install libtbb-dev
 4.  sudo apt-get install qt5-default
+5.  sudo apt-get install liblas-c-dev
+6.  sudo apt-get install maven
 
 (for running the code, don't install the devel versions, just use the regular versions)
 
