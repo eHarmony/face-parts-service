@@ -46,8 +46,8 @@ SOURCES += \
     $$PWD/httpheaders.cpp
 
 macx {
-    INCLUDEPATH += /usr/local/include /opt/local/include /usr/local/include/tbb/ /opt/X11/include
-    LIBS += -L/usr/local/lib -L/opt/X11/lib -lX11
+    INCLUDEPATH += /usr/local/include /opt/local/include /usr/local/include/tbb/
+    LIBS += -L/usr/local/lib
 }
 
 unix:!macx {

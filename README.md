@@ -6,12 +6,12 @@ This is a RESTful API for segmenting human faces from an image.  The software is
 2.  Make the code more usable by wrapping it in a RESTful API.  This makes use of a modified version of [QtWebApp](http://stefanfrings.de/qtwebapp/index-en.html)
 3.  Speed up the code by making use of [Threaded Building Blocks](https://www.threadingbuildingblocks.org/)
 
-# Mac Necessary Libraries
+# Mac Necessary Libraries (Tested on OSX 10.9.4)
 
 1.  Install XCode developer tools and homebrew
 2.  brew install tbb
 3.  Install MacPorts from [here](https://www.macports.org/install.php)
-4.  sudo port install atlas +nofortran (might take a while)
+4.  sudo port install atlas +clang+nofortran (might take a while)
 5.  Download and install Qt 5.2.1 from [here](http://qt-project.org/downloads)
 
 # Red Hat Necessary Libraries (Tested on Centos 6.5)
