@@ -25,6 +25,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void cmyk();
+    void cmykAlternate();
     void goodFace();
     void profile();
     void faceFromPose();

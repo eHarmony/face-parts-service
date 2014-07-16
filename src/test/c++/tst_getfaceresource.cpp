@@ -59,6 +59,10 @@ void GetFaceResourceTest::cmyk() {
     testFaces("cmyk");
 }
 
+void GetFaceResourceTest::cmykAlternate() {
+    testFaces("cmykAlternate");
+}
+
 void GetFaceResourceTest::noFace() {
     testNoFaces("48170621_4");
 }
@@ -84,6 +88,9 @@ void GetFaceResourceTest::testFaces(const QString& fileName) {
     QVERIFY(success);
 
     QFile jsonFile(base + ".json");
+
+    QVERIFY(jsonFile.exists());
+
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QJsonDocument expected = QJsonDocument().fromJson(jsonFile.readAll());
     jsonFile.close();
@@ -91,6 +98,8 @@ void GetFaceResourceTest::testFaces(const QString& fileName) {
     QJsonArray currentArray = current.array();
     QJsonArray expectedArray = expected.array();
 
+    // Make sure we're not comparing zero to zero
+    QVERIFY(expectedArray.size() > 0);
     QCOMPARE(currentArray.size(), expectedArray.size());
 
     for (int i=0; i<currentArray.size(); ++i) {

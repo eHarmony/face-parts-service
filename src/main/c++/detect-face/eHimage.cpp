@@ -121,7 +121,7 @@ image_t* image_readJPG(const char* filename) {
             break;
         case JCS_CMYK:
         case JCS_YCCK:
-            img.CMYKtoRGB();
+            img.CMYKtoCMY();
             break;
         default:
             WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not detect color space ") + filename);
