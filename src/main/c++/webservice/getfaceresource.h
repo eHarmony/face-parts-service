@@ -13,7 +13,7 @@ public:
     explicit GetFaceResource(facemodel_t* faceModel, posemodel_t* poseModel, const QSettings& settings, QObject *parent = 0);
     virtual ~GetFaceResource();
     void service(HttpRequest &request, HttpResponse &response);
-    bool getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints=false);
+    int getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints=false);
 
 private:
     facemodel_t* faceModel;
@@ -24,9 +24,9 @@ private:
     QJsonObject getUnknownParts(const bbox_t& faceBox);
     QJsonObject extractPart(const bbox_t &faceBox, const size_t i);
     QJsonArray extractParts(const bbox_t &faceBox, const size_t start, const size_t end);
-    bool getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes);
-    bool drawFacesOnImage(QFile *file, QByteArray& imageBytes, const QByteArray& extension);
-    bool saveFacesOnImage(const cimg_library::CImg<int>& img, QByteArray& imageBytes, const QByteArray& extension);
+    int getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes);
+    int drawFacesOnImage(QFile *file, QByteArray& imageBytes, const QByteArray& extension);
+    int saveFacesOnImage(const cimg_library::CImg<int>& img, QByteArray& imageBytes, const QByteArray& extension);
     QByteArray generateErrorMessage(QFile *file) const;
 
     const unsigned char* initArray(const QStringList& values);

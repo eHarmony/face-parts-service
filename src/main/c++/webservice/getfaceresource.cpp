@@ -107,33 +107,35 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
             QByteArray extension = path.right(path.size() - extensionLocation - 1);
             if (imageExtensions.contains(extension)) {
                 QByteArray imageBytes;
-                if (drawFacesOnImage(file, imageBytes, extension)) {
+                int status = drawFacesOnImage(file, imageBytes, extension);
+                if (status == HttpHeaders::STATUS_SUCCESS) {
                     response.setHeader(HttpHeaders::CONTENT_TYPE, QByteArray("image/") + extension);
                     response.setHeader(HttpHeaders::CONTENT_LENGTH, imageBytes.size());
                     response.setHeader(HttpHeaders::CACHE_CONTROL, HttpHeaders::NO_CACHE);
                     response.write(imageBytes);
                 }
                 else {
-                    response.setStatus(HttpHeaders::STATUS_ERROR, generateErrorMessage(file));
+                    response.setStatus(status, generateErrorMessage(file));
                 }
             }
             else {
-                response.setStatus(HttpHeaders::STATUS_ERROR, IMAGE_TYPE_NOT_SUPPORTED);
+                response.setStatus(HttpHeaders::STATUS_UNSUPPORTED_MEDIA_TYPE, IMAGE_TYPE_NOT_SUPPORTED);
             }
         }
         else {
             QJsonDocument doc;
             bool writeJustPoints = request.getParameterMap().contains("points") && request.getParameter("points") == "inline";
-            if (getJSONFaces(file, doc, writeJustPoints)) {
+            int status = getJSONFaces(file, doc, writeJustPoints);
+            if (status == HttpHeaders::STATUS_SUCCESS) {
                 response.write(doc.toJson(QJsonDocument::Compact));
             }
             else {
-                response.setStatus(HttpHeaders::STATUS_ERROR, generateErrorMessage(file));
+                response.setStatus(status, generateErrorMessage(file));
             }
         }
     }
     else {
-        response.setStatus(HttpHeaders::STATUS_ERROR, NO_FILE_ERROR);
+        response.setStatus(HttpHeaders::STATUS_PRECONDITION_FAILED, NO_FILE_ERROR);
     }
 }
 
@@ -171,13 +173,14 @@ QByteArray GetFaceResource::generateErrorMessage(QFile *file) const {
  * @param file
  * @param imageBytes
  * @param extension
- * @return whether drawing was successful
+ * @return the HTTP return code
  */
-bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, const QByteArray& extension) {
+int GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, const QByteArray& extension) {
     std::vector<bbox_t> faceBoxes;
 
-    if (!getFaceBoxes(file, faceBoxes)) {
-        return false;
+    int status = getFaceBoxes(file, faceBoxes);
+    if (status != HttpHeaders::STATUS_SUCCESS) {
+        return status;
     }
 
     cimg_library::CImg<int> img;
@@ -222,9 +225,9 @@ bool GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, cons
  * @param img
  * @param imageBytes
  * @param extension
- * @return whether saving was successful
+ * @return the HTTP return code
  */
-bool GetFaceResource::saveFacesOnImage(const cimg_library::CImg<int>& img, QByteArray &imageBytes, const QByteArray &extension) {
+int GetFaceResource::saveFacesOnImage(const cimg_library::CImg<int>& img, QByteArray &imageBytes, const QByteArray &extension) {
     // Since we don't have libjpeg 8 we can't use jpeg_mem_dest.  As a result we have to
     // go to file and then read the information back in.  We have to open it first so that it exists
     // then we close it after we read it back in.
@@ -235,31 +238,31 @@ bool GetFaceResource::saveFacesOnImage(const cimg_library::CImg<int>& img, QByte
         img.save_jpeg(fileName);
     }
     else {
-        return false;
+        return HttpHeaders::STATUS_UNSUPPORTED_MEDIA_TYPE;
     }
     imageBytes = tempImageFile.readAll();
     tempImageFile.close();
-    return true;
+    return HttpHeaders::STATUS_SUCCESS;
 }
 
 /**
  * @brief GetFaceResource::getFaceBoxes -- Gets the face parts of the image in the file.
  * @param file
  * @param faceBoxes
- * @return whether getting the face parts was successful
+ * @return the HTTP return code
  */
-bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
+int GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
     try {
         image_t* img = image_readJPG(file->fileName().toStdString().c_str());
         if (img == NULL) {
-            return false;
+            return HttpHeaders::STATUS_ERROR;
         }
         faceBoxes = facemodel_detect(faceModel, poseModel, img);
         image_delete(img);
-        return true;
+        return HttpHeaders::STATUS_SUCCESS;
     }
     catch (...) {
-        return false;
+        return HttpHeaders::STATUS_UNSUPPORTED_MEDIA_TYPE;
     }
 }
 
@@ -268,13 +271,14 @@ bool GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) 
  * @param file
  * @param document
  * @param writeJustPoints -- Says whether or not to list the points or break them down into meaningful groups
- * @return whether of not the document was modified successfully
+ * @return the HTTP return code
  */
-bool GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints) {
+int GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document, bool writeJustPoints) {
     std::vector<bbox_t> faceBoxes;
 
-    if (!getFaceBoxes(file, faceBoxes)) {
-        return false;
+    int status = getFaceBoxes(file, faceBoxes);
+    if (status != HttpHeaders::STATUS_SUCCESS) {
+        return status;
     }
 
     QJsonArray faces;
@@ -318,7 +322,7 @@ bool GetFaceResource::getJSONFaces(QFile *file, QJsonDocument& document, bool wr
         faces.append(faceParts);
     }
     document.setArray(faces);
-    return true;
+    return status;
 }
 
 /**

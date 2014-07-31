@@ -3,6 +3,7 @@
 #include <QtTest>
 #include <webservice/getfaceresource.h>
 #include <iostream>
+#include <httpheaders.h>
 
 void GetFaceResourceTest::initTestCase() {
     QString modelResources = property("resources").toString();
@@ -26,16 +27,16 @@ void GetFaceResourceTest::noFile()
 
     faceResource->service(request, response);
 
-    QCOMPARE(500, response.getStatus());
+    QCOMPARE(HttpHeaders::STATUS_PRECONDITION_FAILED, response.getStatus());
 }
 
 void GetFaceResourceTest::badFile() {
     QFile file(testResources + "/1.json");
     QJsonDocument doc;
-    bool success = faceResource->getJSONFaces(&file, doc);
+    int status = faceResource->getJSONFaces(&file, doc);
     file.close();
 
-    QVERIFY(!success);
+    QCOMPARE(HttpHeaders::STATUS_UNSUPPORTED_MEDIA_TYPE, status);
     QCOMPARE(QJsonDocument(), doc);
 }
 
@@ -70,12 +71,12 @@ void GetFaceResourceTest::noFace() {
 void GetFaceResourceTest::testNoFaces(const QString &fileName) {
     QFile file(testResources + QDir::separator() + fileName + ".jpg");
     QJsonDocument doc;
-    bool success = faceResource->getJSONFaces(&file, doc);
+    int status = faceResource->getJSONFaces(&file, doc);
     file.close();
     QJsonArray array;
     QJsonDocument emptyDoc(array);
 
-    QVERIFY(success);
+    QCOMPARE(HttpHeaders::STATUS_SUCCESS, status);
     QCOMPARE(emptyDoc, doc);
 }
 
@@ -83,9 +84,9 @@ void GetFaceResourceTest::testFaces(const QString& fileName) {
     QString base = testResources + QDir::separator() + fileName;
     QFile file(base + ".jpg");
     QJsonDocument current;
-    bool success = faceResource->getJSONFaces(&file, current);
+    int status = faceResource->getJSONFaces(&file, current);
     file.close();
-    QVERIFY(success);
+    QCOMPARE(HttpHeaders::STATUS_SUCCESS, status);
 
     QFile jsonFile(base + ".json");
 

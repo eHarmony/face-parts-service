@@ -4,6 +4,7 @@
 #include <QJsonDocument>
 #include <webservice/pathdelegator.h>
 #include <webservice/getfaceresource.h>
+#include <httpheaders.h>
 
 void PathDelegatorTest::initTestCase() {
     pathDelegator = new PathDelegator();
@@ -25,7 +26,7 @@ void PathDelegatorTest::noPath() {
 
     pathDelegator->service(request, response);
 
-    QCOMPARE(404, response.getStatus());
+    QCOMPARE(HttpHeaders::STATUS_NOT_FOUND, response.getStatus());
 }
 
 void PathDelegatorTest::goodPath() {
@@ -36,7 +37,7 @@ void PathDelegatorTest::goodPath() {
     request.setPath("/face-parts/generate");
     pathDelegator->service(request, response);
 
-    QCOMPARE(500, response.getStatus());
+    QCOMPARE(HttpHeaders::STATUS_PRECONDITION_FAILED, response.getStatus());
 }
 
 void PathDelegatorTest::testRemoveExtension() {
