@@ -204,7 +204,7 @@ int GetFaceResource::drawFacesOnImage(QFile *file, QByteArray& imageBytes, const
 
         for (size_t i=0; i<faceBox.boxes.size(); ++i) {
             fbox_t part = faceBox.boxes[i];
-            img.draw_circle((part.x1 + part.x2)/2.0, (part.y1 + part.y2)/2.0, 5, pointColor, 0.5);
+            img.draw_circle((part.x1 + part.x2)/2.0, (part.y1 + part.y2)/2.0, 5, pointColor, 1);
 
             // Transparent and opaque background text
             img.draw_text((part.x1 + part.x2)/2.0,
