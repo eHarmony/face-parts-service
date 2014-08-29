@@ -1,6 +1,7 @@
 language: java
 before_install:
   - sudo apt-get update
+  - sudo apt-get install libgdal1h
   - sudo apt-get install libgdal-dev
   - sudo apt-get install libgdal1-dev
   - sudo apt-get install liblas-dev
