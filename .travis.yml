@@ -1,12 +1,8 @@
 language: java
 before_install:
   - sudo apt-get update
-  - sudo apt-get install libgdal1h
-  - sudo apt-get install libgdal-dev
-  - sudo apt-get install libgdal1-dev
-  - sudo apt-get install liblas-dev
-  - sudo apt-get install liblas-c2
-  - sudo apt-get install liblas-c-dev
+  - sudo apt-get install aptitude
+  - sudo aptitude install liblas-c-dev
   - sudo apt-get install libatlas-dev
   - sudo apt-get install libjpeg-dev
   - sudo apt-get install libtbb-dev
