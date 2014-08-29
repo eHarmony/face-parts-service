@@ -8,6 +8,27 @@
     <name>Face Parts Service</name>
     <description>HTTP service for segmenting faces and getting fiducial markers</description>
 
+    <scm>
+        <connection>scm:git:git@github.corp.eharmony.com:modeling/face-parts-service.git</connection>
+        <url>git@github.corp.eharmony.com:modeling/face-parts-service.git</url>
+        <developerConnection>scm:git:git@github.corp.eharmony.com:modeling/face-parts-service.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-releases</id>
+            <name>eHarmony Releases Repo</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-snapshots</id>
+            <name>eHarmony Snapshot Repo</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
