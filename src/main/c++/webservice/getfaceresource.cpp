@@ -127,7 +127,7 @@ void GetFaceResource::service(HttpRequest &request, HttpResponse &response) {
             bool writeJustPoints = request.getParameterMap().contains("points") && request.getParameter("points") == "inline";
             int status = getJSONFaces(file, doc, writeJustPoints);
             if (status == HttpHeaders::STATUS_SUCCESS) {
-                response.write(doc.toJson(QJsonDocument::Compact));
+                response.write(doc.toJson());
             }
             else {
                 response.setStatus(status, generateErrorMessage(file));
