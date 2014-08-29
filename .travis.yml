@@ -2,7 +2,7 @@ language: java
 before_install:
   - sudo apt-get update
   - sudo apt-get install aptitude
-  - sudo aptitude install liblas-c-dev
+  - sudo aptitude -y install liblas-c-dev
   - sudo apt-get install libatlas-dev
   - sudo apt-get install libjpeg-dev
   - sudo apt-get install libtbb-dev
