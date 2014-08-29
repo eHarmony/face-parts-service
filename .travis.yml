@@ -4,6 +4,9 @@ before_install:
   - sudo apt-get install libatlas-dev
   - sudo apt-get install libjpeg-dev
   - sudo apt-get install libtbb-dev
+  - sudo apt-get install libgdal1-dev
+  - sudo apt-get install liblas-dev
+  - sudo apt-get install liblas-c2
   - sudo apt-get install liblas-c-dev
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
