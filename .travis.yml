@@ -1,12 +1,9 @@
 language: java
 before_install:
   - sudo apt-get update
-  - sudo apt-get install aptitude
-  - sudo aptitude -y install liblas-c-dev
-  - sudo apt-get install libatlas-dev
+  - sudo apt-get install libatlas-base-dev
   - sudo apt-get install libjpeg-dev
   - sudo apt-get install libtbb-dev
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
   - sudo apt-get install -qq qt5-default
-  - sudo dpkg -L libatlas-dev
