@@ -1,3 +1,6 @@
+### Status
+[![Build Status](https://travis-ci.org/eHarmony/face-parts-service.svg?branch=master)](https://travis-ci.org/eHarmony/face-parts-service)
+
 # Executive Summary
 
 This is a RESTful API for segmenting human faces from an image.  The software is powered by [face parts](http://www.ics.uci.edu/~xzhu/face/) using [CImg](http://cimg.sourceforge.net/) for image loading.  The goal of this project is threefold:
