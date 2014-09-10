@@ -260,6 +260,11 @@ int GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
         }
         faceBoxes = facemodel_detect(faceModel, poseModel, img);
         image_delete(img);
+        QByteArray logMsg = QByteArray("Faces: ") + QByteArray::number((int)faceBoxes.size());
+        for (std::vector<bbox_t>::const_iterator bboxIter = faceBoxes.begin(); bboxIter != faceBoxes.end(); ++bboxIter) {
+            logMsg += QByteArray(" Pose: ") + QByteArray::number(bboxIter->pose);
+        }
+        WebLogger::instance()->log(QtWarningMsg, logMsg);
         return HttpHeaders::STATUS_SUCCESS;
     }
     catch (...) {
