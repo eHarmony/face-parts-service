@@ -27,7 +27,7 @@ void PathDelegator::service(HttpRequest &request, HttpResponse &response) {
     else {
         response.setStatus(HttpHeaders::STATUS_NOT_FOUND, QByteArray("Cannot find ") + path);
     }
-    WebLogger::instance()->log(QtWarningMsg, QByteArray::number(response.getStatus()) + ": " + response.getStatusText());
+    WebLogger::log(QtWarningMsg, QByteArray::number(response.getStatus()) + ": " + response.getStatusText(), "pathdelegator", "service");
 }
 
 /**

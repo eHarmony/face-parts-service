@@ -264,7 +264,7 @@ int GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
         for (std::vector<bbox_t>::const_iterator bboxIter = faceBoxes.begin(); bboxIter != faceBoxes.end(); ++bboxIter) {
             logMsg += QByteArray(" Pose: ") + QByteArray::number(bboxIter->pose);
         }
-        WebLogger::instance()->log(QtWarningMsg, logMsg);
+        WebLogger::log(QtWarningMsg, logMsg, "getfaceresource", "getFaceBoxes");
         return HttpHeaders::STATUS_SUCCESS;
     }
     catch (...) {

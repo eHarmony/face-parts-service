@@ -6,6 +6,8 @@ void WebLogger::setFileLogger(FileLogger *fileLogger) {
     WebLogger::logger = fileLogger;
 }
 
-FileLogger* WebLogger::instance() {
-    return logger;
+void WebLogger::log(const QtMsgType type, const QString& message, const QString &file, const QString &function, const int line) {
+    if (logger) {
+        logger->log(type, message, file, function, line);
+    }
 }

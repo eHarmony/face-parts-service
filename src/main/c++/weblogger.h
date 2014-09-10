@@ -7,7 +7,7 @@ class WebLogger
 {
 public:
     static void setFileLogger(FileLogger* fileLogger);
-    static FileLogger* instance();
+    static void log(const QtMsgType type, const QString& message, const QString &file="", const QString &function="", const int line=0);
 
 private:
     WebLogger();
