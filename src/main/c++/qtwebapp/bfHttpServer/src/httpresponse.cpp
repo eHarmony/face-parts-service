@@ -36,6 +36,10 @@ int HttpResponse::getStatus() {
     return statusCode;
 }
 
+QByteArray HttpResponse::getStatusText() const {
+    return statusText;
+}
+
 void HttpResponse::writeHeaders() {
     Q_ASSERT(sentHeaders==false);
     QByteArray buffer;

@@ -74,6 +74,11 @@ public:
     int getStatus();
 
     /**
+      Get the status text.
+    */
+    QByteArray getStatusText() const;
+
+    /**
       Write body data to the socket.
       <p>
       The HTTP status line and headers are sent automatically before the first
