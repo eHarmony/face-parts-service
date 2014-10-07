@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <detect-face/eHimage.h>
 #include <httpheaders.h>
+#include <weblogger.h>
 
 const QByteArray GetFaceResource::FILE_IO_ERROR = "Internal processing error, is the uploaded file a valid jpeg?  ";
 const QByteArray GetFaceResource::NO_FILE_ERROR = "Cannot find the file parameter";
@@ -259,6 +260,11 @@ int GetFaceResource::getFaceBoxes(QFile *file, std::vector<bbox_t>& faceBoxes) {
         }
         faceBoxes = facemodel_detect(faceModel, poseModel, img);
         image_delete(img);
+        QByteArray logMsg = QByteArray("Faces: ") + QByteArray::number((int)faceBoxes.size());
+        for (std::vector<bbox_t>::const_iterator bboxIter = faceBoxes.begin(); bboxIter != faceBoxes.end(); ++bboxIter) {
+            logMsg += QByteArray(" Pose: ") + QByteArray::number(bboxIter->pose);
+        }
+        WebLogger::log(QtWarningMsg, logMsg, "getfaceresource", "getFaceBoxes");
         return HttpHeaders::STATUS_SUCCESS;
     }
     catch (...) {

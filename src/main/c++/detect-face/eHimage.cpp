@@ -89,7 +89,7 @@ image_t* image_readJPG(const char* filename) {
     cimg_library::CImg<int> img;
     img.load_jpeg(filename);
     if(!img.data()) {
-        WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not open ") + filename);
+        WebLogger::log(QtCriticalMsg, QString("Error: can not open ") + filename, "eHimage", "image_readJPG");
         return NULL;
     }
     // If this image only has one element in the spectrum, then we cannot read elements
@@ -124,7 +124,7 @@ image_t* image_readJPG(const char* filename) {
             img.CMYKtoCMY();
             break;
         default:
-            WebLogger::instance()->log(QtCriticalMsg, QString("Error: can not detect color space ") + filename);
+            WebLogger::log(QtCriticalMsg, QString("Error: can not detect color space ") + filename, "eHimage", "image_readJPG");
             return NULL;
     }
 

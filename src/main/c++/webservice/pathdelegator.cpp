@@ -1,5 +1,6 @@
 #include "pathdelegator.h"
 #include <httpheaders.h>
+#include <weblogger.h>
 
 PathDelegator::PathDelegator(QObject *parent) :
     HttpRequestHandler(parent) {
@@ -26,6 +27,7 @@ void PathDelegator::service(HttpRequest &request, HttpResponse &response) {
     else {
         response.setStatus(HttpHeaders::STATUS_NOT_FOUND, QByteArray("Cannot find ") + path);
     }
+    WebLogger::log(QtWarningMsg, QByteArray::number(response.getStatus()) + ": " + response.getStatusText(), "pathdelegator", "service");
 }
 
 /**

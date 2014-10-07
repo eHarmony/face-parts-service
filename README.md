@@ -9,6 +9,10 @@ This is a RESTful API for segmenting human faces from an image.  The software is
 2.  Make the code more usable by wrapping it in a RESTful API.  This makes use of a modified version of [QtWebApp](http://stefanfrings.de/qtwebapp/index-en.html)
 3.  Speed up the code by making use of [Threaded Building Blocks](https://www.threadingbuildingblocks.org/)
 
+Here is an example of the output
+
+![Submitting an image with Postman](/images/regular.jpg)
+
 # Mac Necessary Libraries (Tested on OSX 10.9.4)
 
 1.  Install XCode developer tools and homebrew
