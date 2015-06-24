@@ -154,7 +154,7 @@ void eHshiftdt(double* M, int* Ix, int* Iy,
         data[x].dshift = offy;
         data[x].dstep = dstep;
         data[x].dlen = leny;
-	}
+    }
 
     if (multiThreaded) {
       tbb::parallel_for(tbb::blocked_range<size_t>(0, sizx), dt1d(data));
