@@ -1,3 +1,6 @@
+### Status
+[![Build Status](https://travis-ci.org/eHarmony/face-parts-service.svg?branch=master)](https://travis-ci.org/eHarmony/face-parts-service)
+
 # Executive Summary
 
 This is a RESTful API for segmenting human faces from an image.  The software is powered by [face parts](http://www.ics.uci.edu/~xzhu/face/) using [CImg](http://cimg.sourceforge.net/) for image loading.  The goal of this project is threefold:
@@ -28,12 +31,11 @@ Here is an example of the output
 
 # Ubuntu Necessary Libraries (Tested on Ubuntu 14.04)
 
-1.  sudo apt-get install libatlas-dev
+1.  sudo apt-get install libatlas-base-dev
 2.  sudo apt-get install libjpeg-dev
 3.  sudo apt-get install libtbb-dev
 4.  sudo apt-get install qt5-default
-5.  sudo apt-get install liblas-c-dev
-6.  sudo apt-get install maven
+5.  sudo apt-get install maven
 
 (for running the code, don't install the devel versions, just use the regular versions)
 

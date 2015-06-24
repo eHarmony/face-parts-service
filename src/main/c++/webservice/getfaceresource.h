@@ -1,6 +1,7 @@
 #ifndef GETFACERESOURCE_H
 #define GETFACERESOURCE_H
 
+#include <QStringList>
 #include <httprequesthandler.h>
 #include <detect-face/eHfacemodel.h>
 #include <detect-face/eHposemodel.h>
